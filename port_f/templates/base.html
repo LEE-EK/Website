@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width", initial-scale="1">
+    <title>{% block title %} MARK {% endblock %}</title>
+    <!-- 외부 스타일시트 -->
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">   
+</head>
+<body>
+<!-- 내비게이션바 -->
+        <!-- 내비게이션 바 기본 구성 -->
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collpased" data-toggle="collapse" 
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="{% url 'index' %}"><img src="{% static 'images/nct_logo2.png' %}" alt="NCT" width="110px" height="30px"></a>
+                </div>
+                <div class="collapsed navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="{% url 'board:notice' %}">Notice<span class="sr-only"></span></a></li>
+                        <li><a href="{% url 'board:index' %}">Fancafe</a></li>
+                        <li><a href="#">Goods</a></li>
+                    </ul>
+                    <!-- 검색창 오른쪽정렬
+                    <form class="navbar-form navbar-right">
+                        <div class="form-group">
+                            <input tye="text" class="form-control" placeholder="내용을 입력하세요">
+                        </div>
+                        <button type="submit" class="btn btn-default">검색</button>
+                    </form>
+                     -->
+                    <!-- 로그인 아이콘 오른쪽 정렬-->
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle1" data-toggle="dropdown" role="button"
+                            aria-haspopup="true" aria-expanded="false">Login<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{% url 'member:login' %}" class="list_1">로그인</a></li>
+                                <li><a href="{% url 'member:signup' %}" class="list_2">회원가입</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+{% block content %}{% endblock %}
+
+
+{% block footer %}
+        <!-- 푸터 -->
+        <footer style="background-color: #000000; color: #ffffff">
+            <div class="container_footer">
+                <br>
+                <div class="row">
+                    <div class="col-sm-4" style="text-align: center;">COPYRIGHT &copy;2019&nbsp;&nbsp;NCT MARK</div>
+                    <div class="col-sm-4" style="text-align: center;">
+                        <a href="{% url 'member:agreement' %}" style="color:white;">이용약관</a>
+                        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; 
+                        <a href="{% url 'member:privacy' %}" style="color:white;">개인정보처리방침</a>
+                    </div>
+                    <div class="col-sm-4" style="text-align: center;">
+                        <a href="https://www.instagram.com/nct/" target="_blank"><img class="sns-logo" src="{% static 'images/instagram.png' %}" alt="INSTAGRAM" width="30px" height="30px"></a>
+                        &nbsp;&nbsp;
+                        <a href="https://twitter.com/NCTsmtown" target="_blank"><img class="sns-logo" src="{% static 'images/twitter.png' %}" alt="TWITTER" width="30px" height="30px"></a>
+                        &nbsp;&nbsp;
+                        <a href="https://www.youtube.com/channel/UCwgtORdDtUKhpjE1VBv6XfA" target="_blank"><img class="sns-logo" src="{% static 'images/youtube.png' %}" alt="YOUTUBE" width="30px" height="30px"></a>
+                    </div>
+                </div>
+                <br>
+            </div>
+        </footer>
+{% endblock %}
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="{% static 'js/bootstrap.js' %}"></script>
+<script>
+$(function(){
+$("html, body").animate({ scrollTop: 0 });
+});
+
+/* 로그인, 로그아웃 세션 */
+var member_id ="{{ request.session.member_id }}";
+// 로그인 했을경우
+if (member_id){
+    $('.dropdown-toggle1').text('Logout');
+    $('.list_1').text('로그아웃');
+    $('.list_1').attr('href',"{% url 'member:logout' %}");
+    $('.list_2').text('회원정보수정');
+    $('.list_2').attr('href',"#");
+}
+
+</script>
+</body>
+</html>

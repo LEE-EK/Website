@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% block sidebar %}
+{% load staticfiles %}
+<link rel="stylesheet" href="{% static 'css/board.css' %}">
+
+<!-- 커뮤니티 메인홈 -->
+<div class="container"> <!-- 컨테이너 중앙에 고정 -->
+<!-- 상단 대문이미지 -->
+<div class="container_img"></div>
+<br>
+<div clsas="container_board">
+    <!-- 사이드바 -->
+    <div class="side_bar">
+        <div class="fanpage_side">
+        <ul>
+            <li class="title">NOTICE</li>
+                <li><a href="{% url 'board:notice' %}">공지사항</a></li>
+                <li><a href="#">스케쥴</a></li>
+            <li class="title">ARTIST</li>
+                <li><a href="#">프로필</a></li>
+                <li><a href="#">앨범소개</a></li>
+                <li><a href="#">FROM.MARK</a></li>
+                <li><a href="#">TO.MARK</a></li>
+            <li class="title">BOARD</li>
+                <li><a href="#">자유게시판</a></li>
+                <li><a href="#">인증공간</a></li>
+                <li><a href="#">질문답변</a></li>
+            <li class="title">Q&A</li>
+                <li><a href="#">문의하기</a></li>
+                <li><a href="#">신고하기</a></li>
+        </ul>
+        </div>
+    </div>
+    <!-- 게시공간 -->
+    <div class="board_bar">
+        {% block boardbar %}
+        {% endblock boardbar %}
+    </div> 
+</div>
+
+</div>
+<br>
+{% endblock sidebar%}
+
+{% endblock content %}
