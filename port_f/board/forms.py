@@ -1,13 +1,13 @@
 from django import forms
-from board.models import Post
-from board.models import Comment
+from board.models import Notice,From_mark,To_mark,Freetalk,Auth,Question
+from board.models import Notice_Comment,From_mark_Comment,To_mark_Comment,Freetalk_Comment,Auth_Comment,Question_Comment
 from django_summernote.widgets import SummernoteWidget, SummernoteInplaceWidget
 
 
 
-class PostForm(forms.ModelForm):
+class NoticeForm(forms.ModelForm):
     class Meta:
-        model = Post
+        model = Notice
         
         fields= ['subject', 'memo']
 
@@ -20,10 +20,10 @@ class PostForm(forms.ModelForm):
             'subject': forms.TextInput(attrs={'placeholder':'게시글 제목을 입력하세요.'}),
             'memo': SummernoteWidget(attrs={'class':'memo'})
         }
-
-class CommentForm(forms.ModelForm):
+   
+class Notice_CommentForm(forms.ModelForm):
     class Meta:
-        model = Comment
+        model = Notice_Comment
 
         fields = ['text',]
 
@@ -35,4 +35,162 @@ class CommentForm(forms.ModelForm):
             "text":forms.Textarea(attrs={'placeholder':'댓글을 작성해 주세요.','class':'form-control','rows':5}),
         }
 
-  
+#######################################################################################################
+
+class From_markForm(forms.ModelForm):
+    class Meta:
+        model = From_mark
+        
+        fields= ['subject', 'memo']
+
+        labels = {
+            'subject': '제목',
+            'memo': False
+        }        
+
+        widgets = {
+            'subject': forms.TextInput(attrs={'placeholder':'게시글 제목을 입력하세요.'}),
+            'memo': SummernoteWidget(attrs={'class':'memo'})
+        }
+      
+class From_mark_CommentForm(forms.ModelForm):
+    class Meta:
+        model = From_mark_Comment
+
+        fields = ['text',]
+
+        labels = {
+            "text" : False
+        }
+
+        widgets = {
+            "text":forms.Textarea(attrs={'placeholder':'댓글을 작성해 주세요.','class':'form-control','rows':5}),
+        }
+        
+#######################################################################################################
+
+class To_markForm(forms.ModelForm):
+    class Meta:
+        model = To_mark
+        
+        fields= ['subject', 'memo']
+
+        labels = {
+            'subject': '제목',
+            'memo': False
+        }        
+
+        widgets = {
+            'subject': forms.TextInput(attrs={'placeholder':'게시글 제목을 입력하세요.'}),
+            'memo': SummernoteWidget(attrs={'class':'memo'})
+        }
+      
+class To_mark_CommentForm(forms.ModelForm):
+    class Meta:
+        model = To_mark_Comment
+
+        fields = ['text',]
+
+        labels = {
+            "text" : False
+        }
+
+        widgets = {
+            "text":forms.Textarea(attrs={'placeholder':'댓글을 작성해 주세요.','class':'form-control','rows':5}),
+        }
+
+#######################################################################################################
+
+class FreetalkForm(forms.ModelForm):
+    class Meta:
+        model = Freetalk
+        
+        fields= ['subject', 'memo']
+
+        labels = {
+            'subject': '제목',
+            'memo': False
+        }        
+
+        widgets = {
+            'subject': forms.TextInput(attrs={'placeholder':'게시글 제목을 입력하세요.'}),
+            'memo': SummernoteWidget(attrs={'class':'memo'})
+        }
+      
+class Freetalk_CommentForm(forms.ModelForm):
+    class Meta:
+        model = Freetalk_Comment
+
+        fields = ['text',]
+
+        labels = {
+            "text" : False
+        }
+
+        widgets = {
+            "text":forms.Textarea(attrs={'placeholder':'댓글을 작성해 주세요.','class':'form-control','rows':5}),
+        }
+
+#######################################################################################################
+
+class AuthForm(forms.ModelForm):
+    class Meta:
+        model = Auth
+        
+        fields= ['subject', 'memo']
+
+        labels = {
+            'subject': '제목',
+            'memo': False
+        }        
+
+        widgets = {
+            'subject': forms.TextInput(attrs={'placeholder':'게시글 제목을 입력하세요.'}),
+            'memo': SummernoteWidget(attrs={'class':'memo'})
+        }
+      
+class Auth_CommentForm(forms.ModelForm):
+    class Meta:
+        model = Auth_Comment
+
+        fields = ['text',]
+
+        labels = {
+            "text" : False
+        }
+
+        widgets = {
+            "text":forms.Textarea(attrs={'placeholder':'댓글을 작성해 주세요.','class':'form-control','rows':5}),
+        }
+
+#######################################################################################################
+
+class QuestionForm(forms.ModelForm):
+    class Meta:
+        model = Question
+        
+        fields= ['subject', 'memo']
+
+        labels = {
+            'subject': '제목',
+            'memo': False
+        }        
+
+        widgets = {
+            'subject': forms.TextInput(attrs={'placeholder':'게시글 제목을 입력하세요.'}),
+            'memo': SummernoteWidget(attrs={'class':'memo'})
+        }
+      
+class Question_CommentForm(forms.ModelForm):
+    class Meta:
+        model = Question_Comment
+
+        fields = ['text',]
+
+        labels = {
+            "text" : False
+        }
+
+        widgets = {
+            "text":forms.Textarea(attrs={'placeholder':'댓글을 작성해 주세요.','class':'form-control','rows':5}),
+        }                 

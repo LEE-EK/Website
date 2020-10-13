@@ -2,12 +2,13 @@ from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 from django.core.paginator import Paginator
 
-from .forms import PostForm
-from .forms import CommentForm
-
 from member.models import Member
-from board.models import Post
-from board.models import Comment
+
+from board.models import Notice,From_mark,To_mark,Freetalk,Auth,Question
+from board.models import Notice_Comment,From_mark_Comment,To_mark_Comment,Freetalk_Comment,Auth_Comment,Question_Comment
+
+from .forms import NoticeForm,From_markForm,To_markForm,FreetalkForm,AuthForm,QuestionForm
+from .forms import Notice_CommentForm,From_mark_CommentForm,To_mark_CommentForm,Freetalk_CommentForm,Auth_CommentForm,Question_CommentForm
 
 import math
 
@@ -16,9 +17,11 @@ import math
 class IndexView(TemplateView):
     template_name = 'board/board_index.html'
 
-# 목록 페이지 (공지사항)
-def notice(request):
-    restaurants = Post.objects.all()
+#######################################################################################################
+
+# 공지사항 목록
+def notice_list(request):
+    restaurants = Notice.objects.all()
     pagenator = Paginator(restaurants, 10)
     page = request.GET.get('page')
     if page is None:
@@ -48,23 +51,23 @@ def notice(request):
         'pageRange': pageRange,
         'nextRangeStartPage': nextRangeStartPage,
     }
-    return render(request, 'board/notice.html', context)
+    return render(request, 'board/notice_list.html', context)
 
 
-# 게시글 상세페이지
-def list(request, pk):
+# 공지사항 상세페이지
+def notice_detail(request, pk):
     # 게시글 번호
-    obj = Post.objects.get(pk=pk)
+    obj = Notice.objects.get(pk=pk) 
     # 게시글 작성자 회원정보 보내기 'create'
     create = Member.objects.get(nickname=obj.name)
 
     # 방문할때 마다 게시글 조회수 증가
     obj.hits=obj.hits+1
     obj.save()
-
-
+    
+    
     # 댓글 페이징
-    restaurants = Comment.objects.filter(post=obj).order_by("created_date").reverse()
+    restaurants = Notice_Comment.objects.filter(post=obj).order_by("created_date").reverse()
     pagenator = Paginator(restaurants, 4)
     page = request.GET.get('page')
     if page is None:
@@ -91,7 +94,7 @@ def list(request, pk):
 
     # 댓글 form
     if request.method == 'POST':
-        form = CommentForm(request.POST)
+        form = Notice_CommentForm(request.POST)
         if form.is_valid():
             # 댓글 등록하기 누른 후 
             # 로그인한 아이디 정보가져오기
@@ -104,7 +107,8 @@ def list(request, pk):
             comment.save()
 
             # 댓글 페이징
-            restaurants = Comment.objects.filter(post=obj).order_by("created_date").reverse()
+            restaurants = Notice_Comment.objects.filter(post=obj).order_by("created_date").reverse()
+
             pagenator = Paginator(restaurants, 4)
             page = request.GET.get('page')
             if page is None:
@@ -133,7 +137,7 @@ def list(request, pk):
             # 댓글을 등록했으니 내용 초기화하시오.
             message="댓글등록"
 
-            return render(request, 'board/list.html', {
+            return render(request, 'board/notice_detail.html', {
                 'form':form,
                 'obj':obj,
                 'create':create,
@@ -143,20 +147,21 @@ def list(request, pk):
                 'nextRangeStartPage': nextRangeStartPage,
                 'message': message })
     else:
-        form = CommentForm()
-        return render(request, 'board/list.html', {
+        form = Notice_CommentForm()   
+        return render(request, 'board/notice_detail.html', {
             'form':form,
             'obj':obj,
             'create':create,
             'restaurants': items,
             'lastPage': lastPage,
             'pageRange': pageRange,
-            'nextRangeStartPage': nextRangeStartPage, })
+            'nextRangeStartPage': nextRangeStartPage,
+             })
 
-# 게시글 작성페이지
-def create(request):
+# 공지사항 작성페이지
+def notice_create(request):
     if request.method == 'POST':
-        form = PostForm(request.POST)
+        form = NoticeForm(request.POST)
         if form.is_valid():
             # 로그인한경우
             member_id = request.session.get('member_id')
@@ -164,44 +169,44 @@ def create(request):
             name = obj.nickname
 
             # Board Model에 제목, 작성자, 내용을 등록시킨다.
-            obj = Post(subject=request.POST['subject'], name=name, memo=request.POST['memo'])
+            obj = Notice(subject=request.POST['subject'], name=name, memo=request.POST['memo'])
             obj.save()
-            return redirect('board:notice')
+            return redirect('board:notice_list')
         else:    
             message="한계초과"
-            form = PostForm()
-            return render(request, 'board/create.html', {'form':form, 'message':message})
+            form = NoticeForm()
+            return render(request, 'board/notice_create.html', {'form':form, 'message':message})
     else:
         if request.session.get('member_id'):
-            form = PostForm()
-            return render(request, 'board/create.html', {'form':form})
+            form = NoticeForm()
+            return render(request, 'board/notice_create.html', {'form':form})
         # 로그인안한경우    
         else:
             message="비로그인"
-            form = PostForm()
-            return render(request, 'board/create.html', {'form':form, 'message':message})
+            form = NoticeForm()
+            return render(request, 'board/notice_create.html', {'form':form, 'message':message})
 
-# 게시글 수정페이지
-def update(request, pk):
+# 공지사항 수정페이지
+def notice_update(request, pk):
     if request.method == 'POST':
-        form = PostForm(request.POST)
+        form = NoticeForm(request.POST)
         if form.is_valid():
-            obj = Post.objects.get(pk=pk)
+            obj = Notice.objects.get(pk=pk)
             obj.subject = request.POST['subject']
             obj.memo = request.POST['memo']
             obj.save()
-            return redirect('board:notice')
+            return redirect('board:notice_list')
 
         else:
-            obj = Post.objects.get(pk=pk)
-            form = PostForm(instance = obj)    
+            obj = Notice.objects.get(pk=pk)
+            form = NoticeForm(instance = obj)    
             message="한계초과"
-            return render(request, 'board/update.html', {'form':form, 'obj':obj, 'message':message})
+            return render(request, 'board/notice_update.html', {'form':form, 'obj':obj, 'message':message})
     else:
-        obj = Post.objects.get(pk=pk)
-        form = PostForm(instance = obj)
+        obj = Notice.objects.get(pk=pk)
+        form = NoticeForm(instance = obj)
         create = Member.objects.get(nickname=obj.name)
-        return render(request, 'board/update.html', {
+        return render(request, 'board/notice_update.html', {
             'obj':obj,
             'form':form,
             'subject':obj.subject,
@@ -210,15 +215,15 @@ def update(request, pk):
         })
 
 
-# 게시글 삭제페이지
-def delete(request, pk):
-    obj = Post.objects.get(pk=pk)
+# 공지사항 삭제페이지
+def notice_delete(request, pk):
+    obj = Notice.objects.get(pk=pk)
     obj.delete()
-    return redirect('board:notice')
+    return redirect('board:notice_list')
 
 
-# 게시글 검색페이지
-def search(request):
+# 공지사항 검색페이지
+def notice_search(request):
     # b는 넘겨 받은 검색어
     b = request.GET.get('b','')
     # select는 넘겨 받은 카테고리
@@ -228,16 +233,16 @@ def search(request):
     if b:
         # 카테고리 값에따라 조회결과 출력
         if select=="title":
-            restaurants = Post.objects.filter(subject__contains=b)
+            restaurants = Notice.objects.filter(subject__contains=b)
             
         elif select=="name":
-            restaurants = Post.objects.filter(name__contains=b)
+            restaurants = Notice.objects.filter(name__contains=b)
             
         elif select=="content":
-            restaurants = Post.objects.filter(memo__contains=b) 
+            restaurants = Notice.objects.filter(memo__contains=b) 
         else:
             message = "새로고침"
-            return render(request, 'board/search.html', {'message':message})  
+            return render(request, 'board/notice_search.html', {'message':message})  
 
         pagenator = Paginator(restaurants, 10)
         page = request.GET.get('page')
@@ -270,21 +275,1421 @@ def search(request):
             'select': select,
             'b': b,
         }
-        return render(request, 'board/search.html', context)
+        return render(request, 'board/notice_search.html', context)
         # 카테고리 값이 없을 경우 <새로고침>       
                
     # 입력된 검색어가 없을 경우 <새로고침>       
     else:
         message = "새로고침"
-        return render(request, 'board/search.html', {'message':message})
+        return render(request, 'board/notice_search.html', {'message':message})
 
-# 댓글 삭제
-def comment_delete(request, pk, cpk):
-    comment = Comment.objects.get(pk=cpk)
+# 공지사항 댓글 삭제
+def notice_comment_delete(request, pk, cpk):
+    comment = Notice_Comment.objects.get(pk=cpk)
 
     if not comment.author.member_id == request.session.get('member_id'):
-        return redirect('board:list', pk)
+        return redirect('board:notice_detail', pk)
     else:
         comment.delete()
-        return redirect('board:list', pk)
+        return redirect('board:notice_detail', pk)
 
+
+
+#######################################################################################################
+
+
+
+# FROM_MARK 목록
+def from_mark_list(request):
+    restaurants = From_mark.objects.all()
+    pagenator = Paginator(restaurants, 10)
+    page = request.GET.get('page')
+    if page is None:
+        page = 1
+
+    # 시작페이지 끝페이지 구하기
+    page_F = float(page)
+    if page_F <= 10:
+        beginPage = 1
+    else:
+        beginPage = (math.trunc(page_F / 10)) * 10 + 1
+
+    if (beginPage + 10) > pagenator.num_pages:
+        lastPage = pagenator.num_pages
+    else:
+        lastPage = beginPage + 9
+    nextRangeStartPage = lastPage + 1
+
+    pageRange = []
+    for num in range(beginPage, lastPage+1):
+        pageRange.append(num)
+
+    items = pagenator.get_page(page)
+    context = {
+        'restaurants': items,
+        'lastPage': lastPage,
+        'pageRange': pageRange,
+        'nextRangeStartPage': nextRangeStartPage,
+    }
+    return render(request, 'board/from_mark_list.html', context)
+
+
+# FROM_MARK 상세페이지
+def from_mark_detail(request, pk):
+    # 게시글 번호
+    obj = From_mark.objects.get(pk=pk) 
+    # 게시글 작성자 회원정보 보내기 'create'
+    create = Member.objects.get(nickname=obj.name)
+
+    # 방문할때 마다 게시글 조회수 증가
+    obj.hits=obj.hits+1
+    obj.save()
+    
+    
+    # 댓글 페이징
+    restaurants = From_mark_Comment.objects.filter(post=obj).order_by("created_date").reverse()
+    pagenator = Paginator(restaurants, 4)
+    page = request.GET.get('page')
+    if page is None:
+        page = 1
+
+    # 댓글 시작페이지 끝페이지 구하기
+    page_F = float(page)
+    if page_F <= 10:
+        beginPage = 1
+    else:
+        beginPage = (math.trunc(page_F / 10)) * 10 + 1
+
+    if (beginPage + 10) > pagenator.num_pages:
+        lastPage = pagenator.num_pages
+    else:
+        lastPage = beginPage + 9
+    nextRangeStartPage = lastPage + 1
+
+    pageRange = []
+    for num in range(beginPage, lastPage+1):
+        pageRange.append(num)
+
+    items = pagenator.get_page(page)
+
+    # 댓글 form
+    if request.method == 'POST':
+        form = From_mark_CommentForm(request.POST)
+        if form.is_valid():
+            # 댓글 등록하기 누른 후 
+            # 로그인한 아이디 정보가져오기
+            member_id = request.session.get('member_id')
+            login = Member.objects.get(member_id=member_id)
+            comment = form.save(commit=False)
+            comment.author = login
+            comment.post = obj
+            comment.text = form.cleaned_data['text']
+            comment.save()
+
+            # 댓글 페이징
+            restaurants = From_mark_Comment.objects.filter(post=obj).order_by("created_date").reverse()
+
+            pagenator = Paginator(restaurants, 4)
+            page = request.GET.get('page')
+            if page is None:
+                page = 1
+
+            # 댓글 시작페이지 끝페이지 구하기 <한번 더 댓글 조회>
+            page_F = float(page)
+            if page_F <= 10:
+                beginPage = 1
+            else:
+                beginPage = (math.trunc(page_F / 10)) * 10 + 1
+
+            if (beginPage + 10) > pagenator.num_pages:
+                lastPage = pagenator.num_pages
+            else:
+                lastPage = beginPage + 9
+            nextRangeStartPage = lastPage + 1
+
+            pageRange = []
+            for num in range(beginPage, lastPage+1):
+                pageRange.append(num)
+
+            items = pagenator.get_page(page)
+
+
+            # 댓글을 등록했으니 내용 초기화하시오.
+            message="댓글등록"
+
+            return render(request, 'board/from_mark_detail.html', {
+                'form':form,
+                'obj':obj,
+                'create':create,
+                'restaurants': items,
+                'lastPage': lastPage,
+                'pageRange': pageRange,
+                'nextRangeStartPage': nextRangeStartPage,
+                'message': message })
+    else:
+        form = From_mark_CommentForm()   
+        return render(request, 'board/from_mark_detail.html', {
+            'form':form,
+            'obj':obj,
+            'create':create,
+            'restaurants': items,
+            'lastPage': lastPage,
+            'pageRange': pageRange,
+            'nextRangeStartPage': nextRangeStartPage,
+             })
+
+# FROM_MARK 작성페이지
+def from_mark_create(request):
+    if request.method == 'POST':
+        form = From_markForm(request.POST)
+        if form.is_valid():
+            # 로그인한경우
+            member_id = request.session.get('member_id')
+            obj = Member.objects.get(member_id=member_id)
+            name = obj.nickname
+
+            # Board Model에 제목, 작성자, 내용을 등록시킨다.
+            obj = From_mark(subject=request.POST['subject'], name=name, memo=request.POST['memo'])
+            obj.save()
+            return redirect('board:from_mark_list')
+        else:    
+            message="한계초과"
+            form = From_markForm()
+            return render(request, 'board/from_mark_create.html', {'form':form, 'message':message})
+    else:
+        if request.session.get('member_id'):
+            form = From_markForm()
+            return render(request, 'board/from_mark_create.html', {'form':form})
+        # 로그인안한경우    
+        else:
+            message="비로그인"
+            form = From_markForm()
+            return render(request, 'board/from_mark_create.html', {'form':form, 'message':message})
+
+# FROM_MARK 수정페이지
+def from_mark_update(request, pk):
+    if request.method == 'POST':
+        form = From_markForm(request.POST)
+        if form.is_valid():
+            obj = From_mark.objects.get(pk=pk)
+            obj.subject = request.POST['subject']
+            obj.memo = request.POST['memo']
+            obj.save()
+            return redirect('board:from_mark_list')
+
+        else:
+            obj = From_mark.objects.get(pk=pk)
+            form = From_markForm(instance = obj)    
+            message="한계초과"
+            return render(request, 'board/from_mark_update.html', {'form':form, 'obj':obj, 'message':message})
+    else:
+        obj = From_mark.objects.get(pk=pk)
+        form = From_markForm(instance = obj)
+        create = Member.objects.get(nickname=obj.name)
+        return render(request, 'board/from_mark_update.html', {
+            'obj':obj,
+            'form':form,
+            'subject':obj.subject,
+            'memo':obj.memo,
+            'create':create,
+        })
+
+
+# FROM_MARK 삭제페이지
+def from_mark_delete(request, pk):
+    obj = From_mark.objects.get(pk=pk)
+    obj.delete()
+    return redirect('board:from_mark_list')
+
+
+# FROM_MARK 검색페이지
+def from_mark_search(request):
+    # b는 넘겨 받은 검색어
+    b = request.GET.get('b','')
+    # select는 넘겨 받은 카테고리
+    select = request.GET.get('findType','')
+
+    # 입력된 검색어가 있을 경우
+    if b:
+        # 카테고리 값에따라 조회결과 출력
+        if select=="title":
+            restaurants = From_mark.objects.filter(subject__contains=b)
+            
+        elif select=="name":
+            restaurants = From_mark.objects.filter(name__contains=b)
+            
+        elif select=="content":
+            restaurants = From_mark.objects.filter(memo__contains=b) 
+        else:
+            message = "새로고침"
+            return render(request, 'board/from_mark_search.html', {'message':message})  
+
+        pagenator = Paginator(restaurants, 10)
+        page = request.GET.get('page')
+        if page is None:
+            page = 1
+
+        # 시작페이지 끝페이지 구하기
+        page_F = float(page)
+        if page_F <= 10:
+            beginPage = 1
+        else:
+            beginPage = (math.trunc(page_F / 10)) * 10 + 1
+
+        if (beginPage + 10) > pagenator.num_pages:
+            lastPage = pagenator.num_pages
+        else:
+            lastPage = beginPage + 9
+        nextRangeStartPage = lastPage + 1
+
+        pageRange = []
+        for num in range(beginPage, lastPage+1):
+            pageRange.append(num)
+
+        items = pagenator.get_page(page)
+        context = {
+            'restaurants': items,
+            'lastPage': lastPage,
+            'pageRange': pageRange,
+            'nextRangeStartPage': nextRangeStartPage,
+            'select': select,
+            'b': b,
+        }
+        return render(request, 'board/from_mark_search.html', context)
+        # 카테고리 값이 없을 경우 <새로고침>       
+               
+    # 입력된 검색어가 없을 경우 <새로고침>       
+    else:
+        message = "새로고침"
+        return render(request, 'board/from_mark_search.html', {'message':message})
+
+# FROM_MARK 댓글 삭제
+def from_mark_comment_delete(request, pk, cpk):
+    comment = From_mark_Comment.objects.get(pk=cpk)
+
+    if not comment.author.member_id == request.session.get('member_id'):
+        return redirect('board:from_mark_detail', pk)
+    else:
+        comment.delete()
+        return redirect('board:from_mark_detail', pk)
+
+
+
+
+#######################################################################################################
+
+
+
+# TO_MARK 목록
+def to_mark_list(request):
+    restaurants = To_mark.objects.all()
+    pagenator = Paginator(restaurants, 10)
+    page = request.GET.get('page')
+    if page is None:
+        page = 1
+
+    # 시작페이지 끝페이지 구하기
+    page_F = float(page)
+    if page_F <= 10:
+        beginPage = 1
+    else:
+        beginPage = (math.trunc(page_F / 10)) * 10 + 1
+
+    if (beginPage + 10) > pagenator.num_pages:
+        lastPage = pagenator.num_pages
+    else:
+        lastPage = beginPage + 9
+    nextRangeStartPage = lastPage + 1
+
+    pageRange = []
+    for num in range(beginPage, lastPage+1):
+        pageRange.append(num)
+
+    items = pagenator.get_page(page)
+    context = {
+        'restaurants': items,
+        'lastPage': lastPage,
+        'pageRange': pageRange,
+        'nextRangeStartPage': nextRangeStartPage,
+    }
+    return render(request, 'board/to_mark_list.html', context)
+
+
+# TO_MARK 상세페이지
+def to_mark_detail(request, pk):
+    # 게시글 번호
+    obj = To_mark.objects.get(pk=pk) 
+    # 게시글 작성자 회원정보 보내기 'create'
+    create = Member.objects.get(nickname=obj.name)
+
+    # 방문할때 마다 게시글 조회수 증가
+    obj.hits=obj.hits+1
+    obj.save()
+    
+    
+    # 댓글 페이징
+    restaurants = To_mark_Comment.objects.filter(post=obj).order_by("created_date").reverse()
+    pagenator = Paginator(restaurants, 4)
+    page = request.GET.get('page')
+    if page is None:
+        page = 1
+
+    # 댓글 시작페이지 끝페이지 구하기
+    page_F = float(page)
+    if page_F <= 10:
+        beginPage = 1
+    else:
+        beginPage = (math.trunc(page_F / 10)) * 10 + 1
+
+    if (beginPage + 10) > pagenator.num_pages:
+        lastPage = pagenator.num_pages
+    else:
+        lastPage = beginPage + 9
+    nextRangeStartPage = lastPage + 1
+
+    pageRange = []
+    for num in range(beginPage, lastPage+1):
+        pageRange.append(num)
+
+    items = pagenator.get_page(page)
+
+    # 댓글 form
+    if request.method == 'POST':
+        form = To_mark_CommentForm(request.POST)
+        if form.is_valid():
+            # 댓글 등록하기 누른 후 
+            # 로그인한 아이디 정보가져오기
+            member_id = request.session.get('member_id')
+            login = Member.objects.get(member_id=member_id)
+            comment = form.save(commit=False)
+            comment.author = login
+            comment.post = obj
+            comment.text = form.cleaned_data['text']
+            comment.save()
+
+            # 댓글 페이징
+            restaurants = To_mark_Comment.objects.filter(post=obj).order_by("created_date").reverse()
+
+            pagenator = Paginator(restaurants, 4)
+            page = request.GET.get('page')
+            if page is None:
+                page = 1
+
+            # 댓글 시작페이지 끝페이지 구하기 <한번 더 댓글 조회>
+            page_F = float(page)
+            if page_F <= 10:
+                beginPage = 1
+            else:
+                beginPage = (math.trunc(page_F / 10)) * 10 + 1
+
+            if (beginPage + 10) > pagenator.num_pages:
+                lastPage = pagenator.num_pages
+            else:
+                lastPage = beginPage + 9
+            nextRangeStartPage = lastPage + 1
+
+            pageRange = []
+            for num in range(beginPage, lastPage+1):
+                pageRange.append(num)
+
+            items = pagenator.get_page(page)
+
+
+            # 댓글을 등록했으니 내용 초기화하시오.
+            message="댓글등록"
+
+            return render(request, 'board/to_mark_detail.html', {
+                'form':form,
+                'obj':obj,
+                'create':create,
+                'restaurants': items,
+                'lastPage': lastPage,
+                'pageRange': pageRange,
+                'nextRangeStartPage': nextRangeStartPage,
+                'message': message })
+    else:
+        form = To_mark_CommentForm()   
+        return render(request, 'board/to_mark_detail.html', {
+            'form':form,
+            'obj':obj,
+            'create':create,
+            'restaurants': items,
+            'lastPage': lastPage,
+            'pageRange': pageRange,
+            'nextRangeStartPage': nextRangeStartPage,
+             })
+
+# TO_MARK 작성페이지
+def to_mark_create(request):
+    if request.method == 'POST':
+        form = To_markForm(request.POST)
+        if form.is_valid():
+            # 로그인한경우
+            member_id = request.session.get('member_id')
+            obj = Member.objects.get(member_id=member_id)
+            name = obj.nickname
+
+            # Board Model에 제목, 작성자, 내용을 등록시킨다.
+            obj = To_mark(subject=request.POST['subject'], name=name, memo=request.POST['memo'])
+            obj.save()
+            return redirect('board:to_mark_list')
+        else:    
+            message="한계초과"
+            form = To_markForm()
+            return render(request, 'board/to_mark_create.html', {'form':form, 'message':message})
+    else:
+        if request.session.get('member_id'):
+            form = To_markForm()
+            return render(request, 'board/to_mark_create.html', {'form':form})
+        # 로그인안한경우    
+        else:
+            message="비로그인"
+            form = To_markForm()
+            return render(request, 'board/to_mark_create.html', {'form':form, 'message':message})
+
+# TO_MARK 수정페이지
+def to_mark_update(request, pk):
+    if request.method == 'POST':
+        form = To_markForm(request.POST)
+        if form.is_valid():
+            obj = To_mark.objects.get(pk=pk)
+            obj.subject = request.POST['subject']
+            obj.memo = request.POST['memo']
+            obj.save()
+            return redirect('board:to_mark_list')
+
+        else:
+            obj = To_mark.objects.get(pk=pk)
+            form = To_markForm(instance = obj)    
+            message="한계초과"
+            return render(request, 'board/to_mark_update.html', {'form':form, 'obj':obj, 'message':message})
+    else:
+        obj = To_mark.objects.get(pk=pk)
+        form = To_markForm(instance = obj)
+        create = Member.objects.get(nickname=obj.name)
+        return render(request, 'board/to_mark_update.html', {
+            'obj':obj,
+            'form':form,
+            'subject':obj.subject,
+            'memo':obj.memo,
+            'create':create,
+        })
+
+
+# TO_MARK 삭제페이지
+def to_mark_delete(request, pk):
+    obj = To_mark.objects.get(pk=pk)
+    obj.delete()
+    return redirect('board:to_mark_list')
+
+
+# TO_MARK 검색페이지
+def to_mark_search(request):
+    # b는 넘겨 받은 검색어
+    b = request.GET.get('b','')
+    # select는 넘겨 받은 카테고리
+    select = request.GET.get('findType','')
+
+    # 입력된 검색어가 있을 경우
+    if b:
+        # 카테고리 값에따라 조회결과 출력
+        if select=="title":
+            restaurants = To_mark.objects.filter(subject__contains=b)
+            
+        elif select=="name":
+            restaurants = To_mark.objects.filter(name__contains=b)
+            
+        elif select=="content":
+            restaurants = To_mark.objects.filter(memo__contains=b) 
+        else:
+            message = "새로고침"
+            return render(request, 'board/to_mark_search.html', {'message':message})  
+
+        pagenator = Paginator(restaurants, 10)
+        page = request.GET.get('page')
+        if page is None:
+            page = 1
+
+        # 시작페이지 끝페이지 구하기
+        page_F = float(page)
+        if page_F <= 10:
+            beginPage = 1
+        else:
+            beginPage = (math.trunc(page_F / 10)) * 10 + 1
+
+        if (beginPage + 10) > pagenator.num_pages:
+            lastPage = pagenator.num_pages
+        else:
+            lastPage = beginPage + 9
+        nextRangeStartPage = lastPage + 1
+
+        pageRange = []
+        for num in range(beginPage, lastPage+1):
+            pageRange.append(num)
+
+        items = pagenator.get_page(page)
+        context = {
+            'restaurants': items,
+            'lastPage': lastPage,
+            'pageRange': pageRange,
+            'nextRangeStartPage': nextRangeStartPage,
+            'select': select,
+            'b': b,
+        }
+        return render(request, 'board/to_mark_search.html', context)
+        # 카테고리 값이 없을 경우 <새로고침>       
+               
+    # 입력된 검색어가 없을 경우 <새로고침>       
+    else:
+        message = "새로고침"
+        return render(request, 'board/to_mark_search.html', {'message':message})
+
+# TO_MARK 댓글 삭제
+def to_mark_comment_delete(request, pk, cpk):
+    comment = To_mark_Comment.objects.get(pk=cpk)
+
+    if not comment.author.member_id == request.session.get('member_id'):
+        return redirect('board:to_mark_detail', pk)
+    else:
+        comment.delete()
+        return redirect('board:to_mark_detail', pk)
+
+
+
+#######################################################################################################
+
+
+
+# Freetalk 목록
+def freetalk_list(request):
+    restaurants = Freetalk.objects.all()
+    pagenator = Paginator(restaurants, 10)
+    page = request.GET.get('page')
+    if page is None:
+        page = 1
+
+    # 시작페이지 끝페이지 구하기
+    page_F = float(page)
+    if page_F <= 10:
+        beginPage = 1
+    else:
+        beginPage = (math.trunc(page_F / 10)) * 10 + 1
+
+    if (beginPage + 10) > pagenator.num_pages:
+        lastPage = pagenator.num_pages
+    else:
+        lastPage = beginPage + 9
+    nextRangeStartPage = lastPage + 1
+
+    pageRange = []
+    for num in range(beginPage, lastPage+1):
+        pageRange.append(num)
+
+    items = pagenator.get_page(page)
+    context = {
+        'restaurants': items,
+        'lastPage': lastPage,
+        'pageRange': pageRange,
+        'nextRangeStartPage': nextRangeStartPage,
+    }
+    return render(request, 'board/freetalk_list.html', context)
+
+
+# Freetalk 상세페이지
+def freetalk_detail(request, pk):
+    # 게시글 번호
+    obj = Freetalk.objects.get(pk=pk) 
+    # 게시글 작성자 회원정보 보내기 'create'
+    create = Member.objects.get(nickname=obj.name)
+
+    # 방문할때 마다 게시글 조회수 증가
+    obj.hits=obj.hits+1
+    obj.save()
+    
+    
+    # 댓글 페이징
+    restaurants = Freetalk_Comment.objects.filter(post=obj).order_by("created_date").reverse()
+    pagenator = Paginator(restaurants, 4)
+    page = request.GET.get('page')
+    if page is None:
+        page = 1
+
+    # 댓글 시작페이지 끝페이지 구하기
+    page_F = float(page)
+    if page_F <= 10:
+        beginPage = 1
+    else:
+        beginPage = (math.trunc(page_F / 10)) * 10 + 1
+
+    if (beginPage + 10) > pagenator.num_pages:
+        lastPage = pagenator.num_pages
+    else:
+        lastPage = beginPage + 9
+    nextRangeStartPage = lastPage + 1
+
+    pageRange = []
+    for num in range(beginPage, lastPage+1):
+        pageRange.append(num)
+
+    items = pagenator.get_page(page)
+
+    # 댓글 form
+    if request.method == 'POST':
+        form = Freetalk_CommentForm(request.POST)
+        if form.is_valid():
+            # 댓글 등록하기 누른 후 
+            # 로그인한 아이디 정보가져오기
+            member_id = request.session.get('member_id')
+            login = Member.objects.get(member_id=member_id)
+            comment = form.save(commit=False)
+            comment.author = login
+            comment.post = obj
+            comment.text = form.cleaned_data['text']
+            comment.save()
+
+            # 댓글 페이징
+            restaurants = Freetalk_Comment.objects.filter(post=obj).order_by("created_date").reverse()
+
+            pagenator = Paginator(restaurants, 4)
+            page = request.GET.get('page')
+            if page is None:
+                page = 1
+
+            # 댓글 시작페이지 끝페이지 구하기 <한번 더 댓글 조회>
+            page_F = float(page)
+            if page_F <= 10:
+                beginPage = 1
+            else:
+                beginPage = (math.trunc(page_F / 10)) * 10 + 1
+
+            if (beginPage + 10) > pagenator.num_pages:
+                lastPage = pagenator.num_pages
+            else:
+                lastPage = beginPage + 9
+            nextRangeStartPage = lastPage + 1
+
+            pageRange = []
+            for num in range(beginPage, lastPage+1):
+                pageRange.append(num)
+
+            items = pagenator.get_page(page)
+
+
+            # 댓글을 등록했으니 내용 초기화하시오.
+            message="댓글등록"
+
+            return render(request, 'board/freetalk_detail.html', {
+                'form':form,
+                'obj':obj,
+                'create':create,
+                'restaurants': items,
+                'lastPage': lastPage,
+                'pageRange': pageRange,
+                'nextRangeStartPage': nextRangeStartPage,
+                'message': message })
+    else:
+        form = Freetalk_CommentForm()   
+        return render(request, 'board/freetalk_detail.html', {
+            'form':form,
+            'obj':obj,
+            'create':create,
+            'restaurants': items,
+            'lastPage': lastPage,
+            'pageRange': pageRange,
+            'nextRangeStartPage': nextRangeStartPage,
+             })
+
+# Freetalk 작성페이지
+def freetalk_create(request):
+    if request.method == 'POST':
+        form = FreetalkForm(request.POST)
+        if form.is_valid():
+            # 로그인한경우
+            member_id = request.session.get('member_id')
+            obj = Member.objects.get(member_id=member_id)
+            name = obj.nickname
+
+            # Board Model에 제목, 작성자, 내용을 등록시킨다.
+            obj = Freetalk(subject=request.POST['subject'], name=name, memo=request.POST['memo'])
+            obj.save()
+            return redirect('board:freetalk_list')
+        else:    
+            message="한계초과"
+            form = FreetalkForm()
+            return render(request, 'board/freetalk_create.html', {'form':form, 'message':message})
+    else:
+        if request.session.get('member_id'):
+            form = FreetalkForm()
+            return render(request, 'board/freetalk_create.html', {'form':form})
+        # 로그인안한경우    
+        else:
+            message="비로그인"
+            form = FreetalkForm()
+            return render(request, 'board/freetalk_create.html', {'form':form, 'message':message})
+
+# Freetalk 수정페이지
+def freetalk_update(request, pk):
+    if request.method == 'POST':
+        form = FreetalkForm(request.POST)
+        if form.is_valid():
+            obj = Freetalk.objects.get(pk=pk)
+            obj.subject = request.POST['subject']
+            obj.memo = request.POST['memo']
+            obj.save()
+            return redirect('board:freetalk_list')
+
+        else:
+            obj = Freetalk.objects.get(pk=pk)
+            form = FreetalkForm(instance = obj)    
+            message="한계초과"
+            return render(request, 'board/freetalk_update.html', {'form':form, 'obj':obj, 'message':message})
+    else:
+        obj = Freetalk.objects.get(pk=pk)
+        form = FreetalkForm(instance = obj)
+        create = Member.objects.get(nickname=obj.name)
+        return render(request, 'board/freetalk_update.html', {
+            'obj':obj,
+            'form':form,
+            'subject':obj.subject,
+            'memo':obj.memo,
+            'create':create,
+        })
+
+
+# Freetalk 삭제페이지
+def freetalk_delete(request, pk):
+    obj = Freetalk.objects.get(pk=pk)
+    obj.delete()
+    return redirect('board:freetalk_list')
+
+
+# Freetalk 검색페이지
+def freetalk_search(request):
+    # b는 넘겨 받은 검색어
+    b = request.GET.get('b','')
+    # select는 넘겨 받은 카테고리
+    select = request.GET.get('findType','')
+
+    # 입력된 검색어가 있을 경우
+    if b:
+        # 카테고리 값에따라 조회결과 출력
+        if select=="title":
+            restaurants = Freetalk.objects.filter(subject__contains=b)
+            
+        elif select=="name":
+            restaurants = Freetalk.objects.filter(name__contains=b)
+            
+        elif select=="content":
+            restaurants = Freetalk.objects.filter(memo__contains=b) 
+        else:
+            message = "새로고침"
+            return render(request, 'board/freetalk_search.html', {'message':message})  
+
+        pagenator = Paginator(restaurants, 10)
+        page = request.GET.get('page')
+        if page is None:
+            page = 1
+
+        # 시작페이지 끝페이지 구하기
+        page_F = float(page)
+        if page_F <= 10:
+            beginPage = 1
+        else:
+            beginPage = (math.trunc(page_F / 10)) * 10 + 1
+
+        if (beginPage + 10) > pagenator.num_pages:
+            lastPage = pagenator.num_pages
+        else:
+            lastPage = beginPage + 9
+        nextRangeStartPage = lastPage + 1
+
+        pageRange = []
+        for num in range(beginPage, lastPage+1):
+            pageRange.append(num)
+
+        items = pagenator.get_page(page)
+        context = {
+            'restaurants': items,
+            'lastPage': lastPage,
+            'pageRange': pageRange,
+            'nextRangeStartPage': nextRangeStartPage,
+            'select': select,
+            'b': b,
+        }
+        return render(request, 'board/freetalk_search.html', context)
+        # 카테고리 값이 없을 경우 <새로고침>       
+               
+    # 입력된 검색어가 없을 경우 <새로고침>       
+    else:
+        message = "새로고침"
+        return render(request, 'board/freetalk_search.html', {'message':message})
+
+# Freetalk댓글 삭제
+def freetalk_comment_delete(request, pk, cpk):
+    comment = Freetalk_Comment.objects.get(pk=cpk)
+
+    if not comment.author.member_id == request.session.get('member_id'):
+        return redirect('board:freetalk_detail', pk)
+    else:
+        comment.delete()
+        return redirect('board:freetalk_detail', pk)
+
+
+
+#######################################################################################################
+
+
+
+# AUTH 목록
+def auth_list(request):
+    restaurants = Auth.objects.all()
+    pagenator = Paginator(restaurants, 10)
+    page = request.GET.get('page')
+    if page is None:
+        page = 1
+
+    # 시작페이지 끝페이지 구하기
+    page_F = float(page)
+    if page_F <= 10:
+        beginPage = 1
+    else:
+        beginPage = (math.trunc(page_F / 10)) * 10 + 1
+
+    if (beginPage + 10) > pagenator.num_pages:
+        lastPage = pagenator.num_pages
+    else:
+        lastPage = beginPage + 9
+    nextRangeStartPage = lastPage + 1
+
+    pageRange = []
+    for num in range(beginPage, lastPage+1):
+        pageRange.append(num)
+
+    items = pagenator.get_page(page)
+    context = {
+        'restaurants': items,
+        'lastPage': lastPage,
+        'pageRange': pageRange,
+        'nextRangeStartPage': nextRangeStartPage,
+    }
+    return render(request, 'board/auth_list.html', context)
+
+
+# AUTH 상세페이지
+def auth_detail(request, pk):
+    # 게시글 번호
+    obj = Auth.objects.get(pk=pk) 
+    # 게시글 작성자 회원정보 보내기 'create'
+    create = Member.objects.get(nickname=obj.name)
+
+    # 방문할때 마다 게시글 조회수 증가
+    obj.hits=obj.hits+1
+    obj.save()
+    
+    
+    # 댓글 페이징
+    restaurants = Auth_Comment.objects.filter(post=obj).order_by("created_date").reverse()
+    pagenator = Paginator(restaurants, 4)
+    page = request.GET.get('page')
+    if page is None:
+        page = 1
+
+    # 댓글 시작페이지 끝페이지 구하기
+    page_F = float(page)
+    if page_F <= 10:
+        beginPage = 1
+    else:
+        beginPage = (math.trunc(page_F / 10)) * 10 + 1
+
+    if (beginPage + 10) > pagenator.num_pages:
+        lastPage = pagenator.num_pages
+    else:
+        lastPage = beginPage + 9
+    nextRangeStartPage = lastPage + 1
+
+    pageRange = []
+    for num in range(beginPage, lastPage+1):
+        pageRange.append(num)
+
+    items = pagenator.get_page(page)
+
+    # 댓글 form
+    if request.method == 'POST':
+        form = Auth_CommentForm(request.POST)
+        if form.is_valid():
+            # 댓글 등록하기 누른 후 
+            # 로그인한 아이디 정보가져오기
+            member_id = request.session.get('member_id')
+            login = Member.objects.get(member_id=member_id)
+            comment = form.save(commit=False)
+            comment.author = login
+            comment.post = obj
+            comment.text = form.cleaned_data['text']
+            comment.save()
+
+            # 댓글 페이징
+            restaurants = Auth_Comment.objects.filter(post=obj).order_by("created_date").reverse()
+
+            pagenator = Paginator(restaurants, 4)
+            page = request.GET.get('page')
+            if page is None:
+                page = 1
+
+            # 댓글 시작페이지 끝페이지 구하기 <한번 더 댓글 조회>
+            page_F = float(page)
+            if page_F <= 10:
+                beginPage = 1
+            else:
+                beginPage = (math.trunc(page_F / 10)) * 10 + 1
+
+            if (beginPage + 10) > pagenator.num_pages:
+                lastPage = pagenator.num_pages
+            else:
+                lastPage = beginPage + 9
+            nextRangeStartPage = lastPage + 1
+
+            pageRange = []
+            for num in range(beginPage, lastPage+1):
+                pageRange.append(num)
+
+            items = pagenator.get_page(page)
+
+
+            # 댓글을 등록했으니 내용 초기화하시오.
+            message="댓글등록"
+
+            return render(request, 'board/auth_detail.html', {
+                'form':form,
+                'obj':obj,
+                'create':create,
+                'restaurants': items,
+                'lastPage': lastPage,
+                'pageRange': pageRange,
+                'nextRangeStartPage': nextRangeStartPage,
+                'message': message })
+    else:
+        form = Auth_CommentForm()   
+        return render(request, 'board/auth_detail.html', {
+            'form':form,
+            'obj':obj,
+            'create':create,
+            'restaurants': items,
+            'lastPage': lastPage,
+            'pageRange': pageRange,
+            'nextRangeStartPage': nextRangeStartPage,
+             })
+
+# AUTH 작성페이지
+def auth_create(request):
+    if request.method == 'POST':
+        form = AuthForm(request.POST)
+        if form.is_valid():
+            # 로그인한경우
+            member_id = request.session.get('member_id')
+            obj = Member.objects.get(member_id=member_id)
+            name = obj.nickname
+
+            # Board Model에 제목, 작성자, 내용을 등록시킨다.
+            obj = Auth(subject=request.POST['subject'], name=name, memo=request.POST['memo'])
+            obj.save()
+            return redirect('board:auth_list')
+        else:    
+            message="한계초과"
+            form = AuthForm()
+            return render(request, 'board/auth_create.html', {'form':form, 'message':message})
+    else:
+        if request.session.get('member_id'):
+            form = AuthForm()
+            return render(request, 'board/auth_create.html', {'form':form})
+        # 로그인안한경우    
+        else:
+            message="비로그인"
+            form = AuthForm()
+            return render(request, 'board/auth_create.html', {'form':form, 'message':message})
+
+# AUTH 수정페이지
+def auth_update(request, pk):
+    if request.method == 'POST':
+        form = AuthForm(request.POST)
+        if form.is_valid():
+            obj = Auth.objects.get(pk=pk)
+            obj.subject = request.POST['subject']
+            obj.memo = request.POST['memo']
+            obj.save()
+            return redirect('board:auth_list')
+
+        else:
+            obj = Auth.objects.get(pk=pk)
+            form = AuthForm(instance = obj)    
+            message="한계초과"
+            return render(request, 'board/auth_update.html', {'form':form, 'obj':obj, 'message':message})
+    else:
+        obj = Auth.objects.get(pk=pk)
+        form = AuthForm(instance = obj)
+        create = Member.objects.get(nickname=obj.name)
+        return render(request, 'board/auth_update.html', {
+            'obj':obj,
+            'form':form,
+            'subject':obj.subject,
+            'memo':obj.memo,
+            'create':create,
+        })
+
+
+# AUTH 삭제페이지
+def auth_delete(request, pk):
+    obj = Auth.objects.get(pk=pk)
+    obj.delete()
+    return redirect('board:auth_list')
+
+
+# AUTH 검색페이지
+def auth_search(request):
+    # b는 넘겨 받은 검색어
+    b = request.GET.get('b','')
+    # select는 넘겨 받은 카테고리
+    select = request.GET.get('findType','')
+
+    # 입력된 검색어가 있을 경우
+    if b:
+        # 카테고리 값에따라 조회결과 출력
+        if select=="title":
+            restaurants = Auth.objects.filter(subject__contains=b)
+            
+        elif select=="name":
+            restaurants = Auth.objects.filter(name__contains=b)
+            
+        elif select=="content":
+            restaurants = Auth.objects.filter(memo__contains=b) 
+        else:
+            message = "새로고침"
+            return render(request, 'board/auth_search.html', {'message':message})  
+
+        pagenator = Paginator(restaurants, 10)
+        page = request.GET.get('page')
+        if page is None:
+            page = 1
+
+        # 시작페이지 끝페이지 구하기
+        page_F = float(page)
+        if page_F <= 10:
+            beginPage = 1
+        else:
+            beginPage = (math.trunc(page_F / 10)) * 10 + 1
+
+        if (beginPage + 10) > pagenator.num_pages:
+            lastPage = pagenator.num_pages
+        else:
+            lastPage = beginPage + 9
+        nextRangeStartPage = lastPage + 1
+
+        pageRange = []
+        for num in range(beginPage, lastPage+1):
+            pageRange.append(num)
+
+        items = pagenator.get_page(page)
+        context = {
+            'restaurants': items,
+            'lastPage': lastPage,
+            'pageRange': pageRange,
+            'nextRangeStartPage': nextRangeStartPage,
+            'select': select,
+            'b': b,
+        }
+        return render(request, 'board/auth_search.html', context)
+        # 카테고리 값이 없을 경우 <새로고침>       
+               
+    # 입력된 검색어가 없을 경우 <새로고침>       
+    else:
+        message = "새로고침"
+        return render(request, 'board/auth_search.html', {'message':message})
+
+# AUTH댓글 삭제
+def auth_comment_delete(request, pk, cpk):
+    comment = Auth_Comment.objects.get(pk=cpk)
+
+    if not comment.author.member_id == request.session.get('member_id'):
+        return redirect('board:auth_detail', pk)
+    else:
+        comment.delete()
+        return redirect('board:auth_detail', pk)
+
+
+
+#######################################################################################################
+
+
+
+# QUESTION 목록
+def question_list(request):
+    restaurants = Question.objects.all()
+    pagenator = Paginator(restaurants, 10)
+    page = request.GET.get('page')
+    if page is None:
+        page = 1
+
+    # 시작페이지 끝페이지 구하기
+    page_F = float(page)
+    if page_F <= 10:
+        beginPage = 1
+    else:
+        beginPage = (math.trunc(page_F / 10)) * 10 + 1
+
+    if (beginPage + 10) > pagenator.num_pages:
+        lastPage = pagenator.num_pages
+    else:
+        lastPage = beginPage + 9
+    nextRangeStartPage = lastPage + 1
+
+    pageRange = []
+    for num in range(beginPage, lastPage+1):
+        pageRange.append(num)
+
+    items = pagenator.get_page(page)
+    context = {
+        'restaurants': items,
+        'lastPage': lastPage,
+        'pageRange': pageRange,
+        'nextRangeStartPage': nextRangeStartPage,
+    }
+    return render(request, 'board/question_list.html', context)
+
+
+# QUESTION 상세페이지
+def question_detail(request, pk):
+    # 게시글 번호
+    obj = Question.objects.get(pk=pk) 
+    # 게시글 작성자 회원정보 보내기 'create'
+    create = Member.objects.get(nickname=obj.name)
+
+    # 방문할때 마다 게시글 조회수 증가
+    obj.hits=obj.hits+1
+    obj.save()
+    
+    
+    # 댓글 페이징
+    restaurants = Question_Comment.objects.filter(post=obj).order_by("created_date").reverse()
+    pagenator = Paginator(restaurants, 4)
+    page = request.GET.get('page')
+    if page is None:
+        page = 1
+
+    # 댓글 시작페이지 끝페이지 구하기
+    page_F = float(page)
+    if page_F <= 10:
+        beginPage = 1
+    else:
+        beginPage = (math.trunc(page_F / 10)) * 10 + 1
+
+    if (beginPage + 10) > pagenator.num_pages:
+        lastPage = pagenator.num_pages
+    else:
+        lastPage = beginPage + 9
+    nextRangeStartPage = lastPage + 1
+
+    pageRange = []
+    for num in range(beginPage, lastPage+1):
+        pageRange.append(num)
+
+    items = pagenator.get_page(page)
+
+    # 댓글 form
+    if request.method == 'POST':
+        form = Question_CommentForm(request.POST)
+        if form.is_valid():
+            # 댓글 등록하기 누른 후 
+            # 로그인한 아이디 정보가져오기
+            member_id = request.session.get('member_id')
+            login = Member.objects.get(member_id=member_id)
+            comment = form.save(commit=False)
+            comment.author = login
+            comment.post = obj
+            comment.text = form.cleaned_data['text']
+            comment.save()
+
+            # 댓글 페이징
+            restaurants = Question_Comment.objects.filter(post=obj).order_by("created_date").reverse()
+
+            pagenator = Paginator(restaurants, 4)
+            page = request.GET.get('page')
+            if page is None:
+                page = 1
+
+            # 댓글 시작페이지 끝페이지 구하기 <한번 더 댓글 조회>
+            page_F = float(page)
+            if page_F <= 10:
+                beginPage = 1
+            else:
+                beginPage = (math.trunc(page_F / 10)) * 10 + 1
+
+            if (beginPage + 10) > pagenator.num_pages:
+                lastPage = pagenator.num_pages
+            else:
+                lastPage = beginPage + 9
+            nextRangeStartPage = lastPage + 1
+
+            pageRange = []
+            for num in range(beginPage, lastPage+1):
+                pageRange.append(num)
+
+            items = pagenator.get_page(page)
+
+
+            # 댓글을 등록했으니 내용 초기화하시오.
+            message="댓글등록"
+
+            return render(request, 'board/question_detail.html', {
+                'form':form,
+                'obj':obj,
+                'create':create,
+                'restaurants': items,
+                'lastPage': lastPage,
+                'pageRange': pageRange,
+                'nextRangeStartPage': nextRangeStartPage,
+                'message': message })
+    else:
+        form = Question_CommentForm()   
+        return render(request, 'board/question_detail.html', {
+            'form':form,
+            'obj':obj,
+            'create':create,
+            'restaurants': items,
+            'lastPage': lastPage,
+            'pageRange': pageRange,
+            'nextRangeStartPage': nextRangeStartPage,
+             })
+
+# QUESTION 작성페이지
+def question_create(request):
+    if request.method == 'POST':
+        form = QuestionForm(request.POST)
+        if form.is_valid():
+            # 로그인한경우
+            member_id = request.session.get('member_id')
+            obj = Member.objects.get(member_id=member_id)
+            name = obj.nickname
+
+            # Board Model에 제목, 작성자, 내용을 등록시킨다.
+            obj = Question(subject=request.POST['subject'], name=name, memo=request.POST['memo'])
+            obj.save()
+            return redirect('board:question_list')
+        else:    
+            message="한계초과"
+            form = QuestionForm()
+            return render(request, 'board/question_create.html', {'form':form, 'message':message})
+    else:
+        if request.session.get('member_id'):
+            form = QuestionForm()
+            return render(request, 'board/question_create.html', {'form':form})
+        # 로그인안한경우    
+        else:
+            message="비로그인"
+            form = QuestionForm()
+            return render(request, 'board/question_create.html', {'form':form, 'message':message})
+
+# QUESTION 수정페이지
+def question_update(request, pk):
+    if request.method == 'POST':
+        form = QuestionForm(request.POST)
+        if form.is_valid():
+            obj = Question.objects.get(pk=pk)
+            obj.subject = request.POST['subject']
+            obj.memo = request.POST['memo']
+            obj.save()
+            return redirect('board:question_list')
+
+        else:
+            obj = Question.objects.get(pk=pk)
+            form = QuestionForm(instance = obj)    
+            message="한계초과"
+            return render(request, 'board/question_update.html', {'form':form, 'obj':obj, 'message':message})
+    else:
+        obj = Question.objects.get(pk=pk)
+        form = QuestionForm(instance = obj)
+        create = Member.objects.get(nickname=obj.name)
+        return render(request, 'board/question_update.html', {
+            'obj':obj,
+            'form':form,
+            'subject':obj.subject,
+            'memo':obj.memo,
+            'create':create,
+        })
+
+
+# QUESTION 삭제페이지
+def question_delete(request, pk):
+    obj = Question.objects.get(pk=pk)
+    obj.delete()
+    return redirect('board:question_list')
+
+
+# QUESTION 검색페이지
+def question_search(request):
+    # b는 넘겨 받은 검색어
+    b = request.GET.get('b','')
+    # select는 넘겨 받은 카테고리
+    select = request.GET.get('findType','')
+
+    # 입력된 검색어가 있을 경우
+    if b:
+        # 카테고리 값에따라 조회결과 출력
+        if select=="title":
+            restaurants = Question.objects.filter(subject__contains=b)
+            
+        elif select=="name":
+            restaurants = Question.objects.filter(name__contains=b)
+            
+        elif select=="content":
+            restaurants = Question.objects.filter(memo__contains=b) 
+        else:
+            message = "새로고침"
+            return render(request, 'board/question_search.html', {'message':message})  
+
+        pagenator = Paginator(restaurants, 10)
+        page = request.GET.get('page')
+        if page is None:
+            page = 1
+
+        # 시작페이지 끝페이지 구하기
+        page_F = float(page)
+        if page_F <= 10:
+            beginPage = 1
+        else:
+            beginPage = (math.trunc(page_F / 10)) * 10 + 1
+
+        if (beginPage + 10) > pagenator.num_pages:
+            lastPage = pagenator.num_pages
+        else:
+            lastPage = beginPage + 9
+        nextRangeStartPage = lastPage + 1
+
+        pageRange = []
+        for num in range(beginPage, lastPage+1):
+            pageRange.append(num)
+
+        items = pagenator.get_page(page)
+        context = {
+            'restaurants': items,
+            'lastPage': lastPage,
+            'pageRange': pageRange,
+            'nextRangeStartPage': nextRangeStartPage,
+            'select': select,
+            'b': b,
+        }
+        return render(request, 'board/question_search.html', context)
+        # 카테고리 값이 없을 경우 <새로고침>       
+               
+    # 입력된 검색어가 없을 경우 <새로고침>       
+    else:
+        message = "새로고침"
+        return render(request, 'board/question_search.html', {'message':message})
+
+# QUESTION댓글 삭제
+def question_comment_delete(request, pk, cpk):
+    comment = Question_Comment.objects.get(pk=cpk)
+
+    if not comment.author.member_id == request.session.get('member_id'):
+        return redirect('board:question_detail', pk)
+    else:
+        comment.delete()
+        return redirect('board:question_detail', pk)                                                        

@@ -9,16 +9,16 @@ urlpatterns = [
     # /privacy - 개인정보처리방침
     path('privacy/', views.Privacy.as_view(), name='privacy'),
     
-    # /login - 로그인화면
+    # /login - 로그인 화면
     path('login/', views.loginform, name ='login'),
     
     # /logout - 로그아웃
     path('logout/', views.logout, name='logout'),
 
-    # /signup - 회원가입화면
+    # /signup - 회원가입 화면
     path('signup/', views.signupform, name ='signup'),
 
-    # /signup/<pk>/result - 회원가입완료화면
+    # /signup/<pk>/result - 회원가입완료 화면
     path('signup/<int:pk>/result/', views.SiResultView.as_view(), name='signup_result'),
 
     # /find_id - 아이디찾기

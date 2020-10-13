@@ -1,0 +1,82 @@
+{% extends "board/freetalk_list.html" %}
+
+{% block conbody %}
+{% load staticfiles %}
+<!-- createView 내부 스타일시트 -->
+<style type="text/css">
+/* 라벨 */
+label {
+    padding: 0px 20px 0px 10px;
+}
+/* 제목 input */
+#id_subject {
+    width: 500px;
+    background-color:#F9F5F4;
+}
+/* 텍스트 input */
+#id_memo {
+    background-color: white;
+    display: block;
+    width: 600px;
+    height: 400px;
+    margin-top: 20px;
+    margin-left: 60px;
+
+}
+
+/* 버튼 */
+.btn_all {
+    margin: 30px 30px 0px 525px;
+}
+.btn-dark {
+    width: 80px;
+    height: 40px;
+    background:#444;
+    border: 1px solid #666;
+    color: #fff;
+    font-weight: bold;
+    font-size: 17px;
+    cursor: pointer;
+    text-decoration: none;
+}
+/* 목록 버튼 */
+a.btn-dark {
+    padding: 9px 21px 9px 21px;
+    margin-right: 10px;
+    text-decoration: none;
+}
+a.btn-dark:hover {
+    color: #fff;
+}
+
+</style>
+<br><br><br>
+<div class="createView">
+    <form method="POST" action="{% url 'board:freetalk_create' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form.as_table}}
+        <div class="btn_all">
+            <a href="{% url 'board:freetalk_list' %}" class="btn-dark">목 록</a>
+            <input type="submit" class="btn-dark" value="확 인"/>
+        </div>
+    </form>
+</div>
+
+<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+
+var message = "{{ message }}";
+if (message=="비로그인"){
+    alert("로그인 해주세요");
+    window.location.href = "{% url 'board:freetalk_list' %}";
+}
+if (message=="한계초과"){
+    alert("게시글 내용을 초과하였습니다");
+    window.location.href = "{% url 'board:freetalk_list' %}";
+}
+
+</script>
+
+
+{% endblock conbody %}

@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-
 {% block content %}
 
 {% block sidebar %}
@@ -17,17 +16,17 @@
         <div class="fanpage_side">
         <ul>
             <li class="title">NOTICE</li>
-                <li><a href="{% url 'board:notice' %}">공지사항</a></li>
+                <li><a href="{% url 'board:notice_list' %}">공지사항</a></li>
                 <li><a href="#">스케쥴</a></li>
             <li class="title">ARTIST</li>
                 <li><a href="#">프로필</a></li>
                 <li><a href="#">앨범소개</a></li>
-                <li><a href="#">FROM.MARK</a></li>
-                <li><a href="#">TO.MARK</a></li>
+                <li><a href="{% url 'board:from_mark_list' %}">FROM.MARK</a></li>
+                <li><a href="{% url 'board:to_mark_list' %}">TO.MARK</a></li>
             <li class="title">BOARD</li>
-                <li><a href="#">자유게시판</a></li>
-                <li><a href="#">인증공간</a></li>
-                <li><a href="#">질문답변</a></li>
+                <li><a href="{% url 'board:freetalk_list' %}">자유게시판</a></li>
+                <li><a href="{% url 'board:auth_list' %}">인증공간</a></li>
+                <li><a href="{% url 'board:question_list' %}">질문답변</a></li>
             <li class="title">Q&A</li>
                 <li><a href="#">문의하기</a></li>
                 <li><a href="#">신고하기</a></li>
