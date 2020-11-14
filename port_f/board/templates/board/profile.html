@@ -1,0 +1,69 @@
+{% extends "board/board_base.html" %}
+{% block title %} 프로필 | MARK {% endblock %}
+
+{% block boardbar %}
+{% load static %}
+
+
+<!-- conbody 내부 스타일시트 -->
+<style type="text/css">
+.conbody {
+    font-family: 'Nanum Square', '나눔 고딕', 'Nanum Gothic', sans-serif;
+    font-weight:  bold;
+    color: black;
+    margin: 0;
+    padding: 0;
+}
+.conbody .conleft {
+    font-size: 16px;
+    font-family: sans-serif;
+    width: 400px;
+    float: left;
+    margin-left: -30px;
+}
+.conbody .conright {
+    width: 400px;
+    margin-left: 440px;
+}
+span{
+    background-color: #000000;
+    color: yellow;
+    font-size:25px;
+    font-weight: bolder;
+}
+
+.conright img{
+    width: 400px;
+}
+</style>
+
+
+{% block conbody %}
+<div class="conbody">
+    <div class="conleft">
+        <span>&nbsp;MARK 마크&nbsp;</span>
+        <br><br>
+        한국계 캐나다인 2세이다. NCT의 모든 서브그룹에서
+        활동하는 멤버로, 팀 내 메인래퍼와 메인댄서를 맡고 있다.
+        뿐만 아니라 보컬, 작사, 기타 실력, 뛰어난 콘셉트 이해도와
+        소화력을 갖고 있다
+        <br><br>
+        <span>&nbsp;데&nbsp;뷔&nbsp;</span><br><br>
+        2016년 NCT U 디지털 싱글<br>
+        <일곱 번째 감각 (The 7th Sense)>
+        <br><br>
+        <span>&nbsp;소속그룹&nbsp;</span><br><br>
+        SM엔터테이먼트 소속 보이그룹 NCT와
+        서브그룹 NCT U, NCT127, NCT DREAM 
+        그리고 SuperM의 멤버이다.
+        <br><br>
+        <span>&nbsp;포지션&nbsp;</span><br><br>
+        메인래퍼, 메인댄서, 서브보컬
+        <br><br>
+    </div>
+    <div class="conright">
+        <img src="{% static 'images/profile.jpg' %}">
+    </div>
+</div>
+{% endblock conbody %}
+{% endblock boardbar %}

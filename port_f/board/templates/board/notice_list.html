@@ -2,7 +2,7 @@
 {% block title %} 공지사항 | MARK {% endblock %}
 
 {% block boardbar %}
-{% load staticfiles %}
+{% load static %}
 <!-- boardbar 내부 스타일시트 -->
 <style type="text/css">
 h3 {
@@ -113,7 +113,7 @@ h3 {
     <td width=50><p align=center>{{ boardRow.id }}</p></tboardListd>
     <td width=320 class="cont">
     <p align=left>
-    <a href="{% url 'board:notice_detail' boardRow.id %}" title="{{ boardRow.memo}}">{{ boardRow.subject }}
+    <a href="{% url 'board:notice_detail' boardRow.id %}" >{{ boardRow.subject }}
     </p>
     </td>
     <td width=100><p align=center>{{ boardRow.name }}</p></td>

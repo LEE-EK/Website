@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width", initial-scale="1">
     <title>{% block title %} MARK {% endblock %}</title>
     <!-- 외부 스타일시트 -->
-    {% load staticfiles %}
+    {% load static %}
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}">   
 </head>
@@ -83,9 +83,7 @@
 <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="{% static 'js/bootstrap.js' %}"></script>
 <script>
-$(function(){
-$("html, body").animate({ scrollTop: 0 });
-});
+
 
 /* 로그인, 로그아웃 세션 */
 var member_id ="{{ request.session.member_id }}";

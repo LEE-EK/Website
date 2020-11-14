@@ -7,6 +7,15 @@ urlpatterns = [
     # /index - 커뮤니티 메인홈
     path('index/', views.IndexView.as_view(), name='index'),
 
+    # /profile - 프로필 페이지
+    path('profile/', views.ProfileView.as_view(), name='profile'),
+
+    # /album - 앨범 페이지
+    path('album/', views.AlbumView.as_view(), name='album'),
+
+    # /schedule - 스케쥴 페이지
+    path('schedule/', views.ScheduleView.as_view(), name='schedule'),
+
     #######################################################################################################
 
     # /notice_list - 공지사항 목록

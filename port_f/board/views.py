@@ -17,6 +17,18 @@ import math
 class IndexView(TemplateView):
     template_name = 'board/board_index.html'
 
+# 프로필 페이지
+class ProfileView(TemplateView):
+    template_name = 'board/profile.html'
+
+# 앨범 페이지
+class AlbumView(TemplateView):
+    template_name = 'board/album.html'    
+
+# 스케쥴 페이지
+class ScheduleView(TemplateView):
+    template_name = 'board/schedule.html'  
+
 #######################################################################################################
 
 # 공지사항 목록

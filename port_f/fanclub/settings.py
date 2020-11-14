@@ -128,17 +128,16 @@ DATETIME_FORMAT = 'Y-m-d H:i:s'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static/'
-
+STATIC_URL = '/static/' #URL
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/') #웹서버 경로
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')] #실제 디렉터리 경로/개발서버 경로
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
 )
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 MEDIA_URL = '/media/'
-
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Session timeout
