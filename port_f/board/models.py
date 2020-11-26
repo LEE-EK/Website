@@ -2,6 +2,12 @@ from django.db import models
 from django.utils import timezone
 from member.models import Member
 
+#장고는 클래스 메소드를 사용하는 대신, 별도의 Manager클래스를 정의하고 
+#Manager클래스의 메소드를 통해서 테이블에 대한 CRUD동작을 수행합니다.
+
+#모든 모델은 반드시 Manager속성을 가져한다
+# ex)Album.object.all() 처럼 QuerySet객체를 반환하여 쓸수있습니다 all(),filter()등등
+
 # Notice table
 class Notice(models.Model):
     objects = models.Manager()
@@ -12,9 +18,9 @@ class Notice(models.Model):
     create_date = models.DateField('create_date', auto_now_add=True)
 
     class Meta:
-        ordering = ['-id']
+        ordering = ['-id'] #(-)내림차순
 
-    def __str__(self):
+    def __str__(self):#객체의 문자열 메소드
         return self.subject
 
 # Notice_Comment table
@@ -168,3 +174,16 @@ class Question_Comment(models.Model):
 
     def __str__(self):
         return self.text                         
+
+#######################################################################################################
+
+# Inquiry table
+class Inquiry(models.Model):
+    objects = models.Manager()
+    author = models.ForeignKey('member.member', on_delete=models.CASCADE)
+    text = models.TextField()
+    created_date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.text
+       

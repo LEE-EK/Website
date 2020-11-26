@@ -1,6 +1,7 @@
 from django import forms
-from board.models import Notice,From_mark,To_mark,Freetalk,Auth,Question
-from board.models import Notice_Comment,From_mark_Comment,To_mark_Comment,Freetalk_Comment,Auth_Comment,Question_Comment
+from board.models import Notice,From_mark,To_mark,Freetalk,Auth,Question,Inquiry
+from board.models import Notice_Comment,From_mark_Comment,To_mark_Comment,\
+                            Freetalk_Comment,Auth_Comment,Question_Comment
 from django_summernote.widgets import SummernoteWidget, SummernoteInplaceWidget
 
 
@@ -193,4 +194,21 @@ class Question_CommentForm(forms.ModelForm):
 
         widgets = {
             "text":forms.Textarea(attrs={'placeholder':'댓글을 작성해 주세요.','class':'form-control','rows':5}),
-        }                 
+        }
+
+#######################################################################################################
+
+class InquiryForm(forms.ModelForm):
+    class Meta:
+        model = Inquiry
+
+        fields = ['text',]
+
+        labels = {
+            "text" : False
+        }
+
+        widgets = {
+            "text":forms.Textarea(attrs={'placeholder':'※모든 문의글은 비밀글 처리됩니다※','class':'form-control','rows':5}),
+        }
+

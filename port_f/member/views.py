@@ -22,12 +22,6 @@ class Agreement(TemplateView):
 class Privacy(TemplateView):
     template_name = 'member/privacy.html'
 
-# 로그인완료화면
-class LoResultView(DetailView):
-    model = Member
-    template_name = 'member/login_result.html'
-    context_object_name = "result"
-
 # 회원가입완료화면
 class SiResultView(DetailView):
     model = Member

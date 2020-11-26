@@ -4,19 +4,12 @@ from . import views
 app_name = 'board'
 urlpatterns = [
 
+    ####################################################################################################### MAIN
+
     # /index - 커뮤니티 메인홈
     path('index/', views.IndexView.as_view(), name='index'),
 
-    # /profile - 프로필 페이지
-    path('profile/', views.ProfileView.as_view(), name='profile'),
-
-    # /album - 앨범 페이지
-    path('album/', views.AlbumView.as_view(), name='album'),
-
-    # /schedule - 스케쥴 페이지
-    path('schedule/', views.ScheduleView.as_view(), name='schedule'),
-
-    #######################################################################################################
+    ####################################################################################################### NOTICE
 
     # /notice_list - 공지사항 목록
     path('notice_list/', views.notice_list, name='notice_list'),
@@ -39,7 +32,16 @@ urlpatterns = [
     # /notice_comment_delete - 공지사항 댓글 삭제
     path('notice_list/<int:pk>/comment/<int:cpk>/delete', views.notice_comment_delete, name='notice_comment_delete'),
 
-    #######################################################################################################
+    # /schedule - 스케쥴 페이지
+    path('schedule/', views.ScheduleView.as_view(), name='schedule'),
+
+    ####################################################################################################### ARTIST
+
+    # /profile - 프로필 페이지
+    path('profile/', views.ProfileView.as_view(), name='profile'),
+
+    # /album - 앨범 페이지
+    path('album/', views.AlbumView.as_view(), name='album'),
 
     # /from_mark_list - FROM_MARK 목록
     path('from_mark_list/', views.from_mark_list, name='from_mark_list'),
@@ -62,8 +64,6 @@ urlpatterns = [
     # /from_mark_comment_delete - FROM_MARK 댓글 삭제
     path('from_mark_list/<int:pk>/comment/<int:cpk>/delete', views.from_mark_comment_delete, name='from_mark_comment_delete'),
 
-    #######################################################################################################
-
     # /to_mark_list - TO_MARK 목록
     path('to_mark_list/', views.to_mark_list, name='to_mark_list'),
 
@@ -85,8 +85,8 @@ urlpatterns = [
     # /to_mark_comment_delete - TO_MARK 댓글 삭제
     path('to_mark_list/<int:pk>/comment/<int:cpk>/delete', views.to_mark_comment_delete, name='to_mark_comment_delete'),
 
-    #######################################################################################################
-
+    ####################################################################################################### BOARD
+    
     # /freetalk_list - Freetalk 목록
     path('freetalk_list/', views.freetalk_list, name='freetalk_list'),
 
@@ -107,8 +107,6 @@ urlpatterns = [
 
     # /freetalk_comment_delete - Freetalk 댓글 삭제
     path('freetalk_list/<int:pk>/comment/<int:cpk>/delete', views.freetalk_comment_delete, name='freetalk_comment_delete'),
-
-    #######################################################################################################
 
     # /auth_list - Auth 목록
     path('auth_list/', views.auth_list, name='auth_list'),
@@ -131,9 +129,6 @@ urlpatterns = [
     # /auth_comment_delete - Auth 댓글 삭제
     path('auth_list/<int:pk>/comment/<int:cpk>/delete', views.auth_comment_delete, name='auth_comment_delete'),
 
-
-    #######################################################################################################
-
     # /question_list - Question 목록
     path('question_list/', views.question_list, name='question_list'),
 
@@ -153,5 +148,14 @@ urlpatterns = [
     path('question_search/', views.question_search, name='question_search'),
 
     # /question_comment_delete - Question 댓글 삭제
-    path('question_list/<int:pk>/comment/<int:cpk>/delete', views.question_comment_delete, name='question_comment_delete'),      
+    path('question_list/<int:pk>/comment/<int:cpk>/delete', views.question_comment_delete, name='question_comment_delete'),
+
+    ####################################################################################################### Q&A
+
+    # /inquiry - 문의하기
+    path('inquiry/', views.inquiry, name='inquiry'),
+
+    # /inquiry_delete - 문의하기 삭제
+    path('inquiry/<int:pk>/delete', views.inquiry_delete, name='inquiry_delete'),
+   
 ]

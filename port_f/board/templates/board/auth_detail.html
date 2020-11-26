@@ -99,21 +99,37 @@ table {
 #control{display:none}
 
 
+/* 댓글작성창 */
+.comment-bottom {
+    width: 700px;
+    
+}
+
 /* 댓글창 */
 #comment {
     width: 700px;
-    padding: 10px 10px 10px 10px;
-    border: 1px solid #FFD633;
+    border-top: 1px solid #d7d5d5;
 }
 
-.comment-bottom {
+.comment-list {
     width: 700px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #d7d5d5;
+    border-top: none;
+    color: #353535;
+    padding: 12px 0px 7px;
 }
 
 .comment-name {
     font-weight: bold;
+    padding: 0px 20px 10px 20px;
 }
-
+.comment-memo {
+    clear: both;
+    border-top: 1px solid #e9e9e9;
+    padding: 15px 20px 10px 20px;
+}
 .btn {
     font-size: 13px;
     font-weight: bold;
@@ -131,7 +147,7 @@ table {
 
 /* 댓글 수정삭제 버튼 */
 .but {
-    color: #666;
+    color: red;
 }
 .but:hover {
     text-decoration: none;
@@ -216,18 +232,20 @@ table {
 <div id="comment">
     {% for comment in restaurants %}
     <div class="comment-list">
-        <p class="comment-name">{{ comment.author }}&nbsp;&nbsp;
+        <div class="comment-name">{{ comment.author }}&nbsp;&nbsp;
             <small>{{ comment.created_date }}</small>&nbsp;&nbsp;
             {% if comment.author.member_id == request.session.member_id %}
             <small><a href="{% url 'board:auth_comment_delete' pk=obj.pk cpk=comment.pk %}" class="but">삭제</a></small>
             {% endif %}
-        </p>
-        <p>{{ comment.text|linebreaks }}</p>
+        </div>
+        <div class="comment-memo">
+            <p>{{ comment.text|linebreaks }}</p>
+        </div>
         <br>
     </div>
     {% empty %}
     <div class="comment-list">
-        <p>작성된 댓글이 없습니다!</p>
+        <p style="padding-left: 15px;">작성된 댓글이 없습니다!</p>
     </div>
     {% endfor %}
 </div>

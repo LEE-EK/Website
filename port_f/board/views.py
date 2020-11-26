@@ -4,32 +4,23 @@ from django.core.paginator import Paginator
 
 from member.models import Member
 
-from board.models import Notice,From_mark,To_mark,Freetalk,Auth,Question
-from board.models import Notice_Comment,From_mark_Comment,To_mark_Comment,Freetalk_Comment,Auth_Comment,Question_Comment
+from board.models import Notice,From_mark,To_mark,Freetalk,Auth,Question,Inquiry
+from board.models import Notice_Comment,From_mark_Comment,To_mark_Comment,\
+                            Freetalk_Comment,Auth_Comment,Question_Comment
 
-from .forms import NoticeForm,From_markForm,To_markForm,FreetalkForm,AuthForm,QuestionForm
-from .forms import Notice_CommentForm,From_mark_CommentForm,To_mark_CommentForm,Freetalk_CommentForm,Auth_CommentForm,Question_CommentForm
+from .forms import NoticeForm,From_markForm,To_markForm,FreetalkForm,AuthForm,QuestionForm,InquiryForm
+from .forms import Notice_CommentForm,From_mark_CommentForm,To_mark_CommentForm,\
+                    Freetalk_CommentForm,Auth_CommentForm,Question_CommentForm
 
 import math
 
+####################################################################################################### MAIN
 
 # 커뮤니티 메인화면
 class IndexView(TemplateView):
     template_name = 'board/board_index.html'
 
-# 프로필 페이지
-class ProfileView(TemplateView):
-    template_name = 'board/profile.html'
-
-# 앨범 페이지
-class AlbumView(TemplateView):
-    template_name = 'board/album.html'    
-
-# 스케쥴 페이지
-class ScheduleView(TemplateView):
-    template_name = 'board/schedule.html'  
-
-#######################################################################################################
+####################################################################################################### NOTICE
 
 # 공지사항 목록
 def notice_list(request):
@@ -118,15 +109,14 @@ def notice_detail(request, pk):
             comment.text = form.cleaned_data['text']
             comment.save()
 
-            # 댓글 페이징
+            # 댓글 페이징 (중복이지만 필요한것)
             restaurants = Notice_Comment.objects.filter(post=obj).order_by("created_date").reverse()
-
             pagenator = Paginator(restaurants, 4)
             page = request.GET.get('page')
             if page is None:
                 page = 1
 
-            # 댓글 시작페이지 끝페이지 구하기 <한번 더 댓글 조회>
+            # 댓글 시작페이지 끝페이지 구하기
             page_F = float(page)
             if page_F <= 10:
                 beginPage = 1
@@ -144,7 +134,6 @@ def notice_detail(request, pk):
                 pageRange.append(num)
 
             items = pagenator.get_page(page)
-
 
             # 댓글을 등록했으니 내용 초기화하시오.
             message="댓글등록"
@@ -305,11 +294,21 @@ def notice_comment_delete(request, pk, cpk):
         comment.delete()
         return redirect('board:notice_detail', pk)
 
+   
 
+# 스케쥴 페이지
+class ScheduleView(TemplateView):
+    template_name = 'board/schedule.html'  
 
-#######################################################################################################
+####################################################################################################### ARTIST
 
+# 프로필 페이지
+class ProfileView(TemplateView):
+    template_name = 'board/profile.html'
 
+# 앨범 페이지
+class AlbumView(TemplateView):
+    template_name = 'board/album.html' 
 
 # FROM_MARK 목록
 def from_mark_list(request):
@@ -398,15 +397,14 @@ def from_mark_detail(request, pk):
             comment.text = form.cleaned_data['text']
             comment.save()
 
-            # 댓글 페이징
+            # 댓글 페이징 (중복이지만 필요한것)
             restaurants = From_mark_Comment.objects.filter(post=obj).order_by("created_date").reverse()
-
             pagenator = Paginator(restaurants, 4)
             page = request.GET.get('page')
             if page is None:
                 page = 1
 
-            # 댓글 시작페이지 끝페이지 구하기 <한번 더 댓글 조회>
+            # 댓글 시작페이지 끝페이지 구하기
             page_F = float(page)
             if page_F <= 10:
                 beginPage = 1
@@ -424,7 +422,6 @@ def from_mark_detail(request, pk):
                 pageRange.append(num)
 
             items = pagenator.get_page(page)
-
 
             # 댓글을 등록했으니 내용 초기화하시오.
             message="댓글등록"
@@ -586,12 +583,6 @@ def from_mark_comment_delete(request, pk, cpk):
         return redirect('board:from_mark_detail', pk)
 
 
-
-
-#######################################################################################################
-
-
-
 # TO_MARK 목록
 def to_mark_list(request):
     restaurants = To_mark.objects.all()
@@ -679,15 +670,14 @@ def to_mark_detail(request, pk):
             comment.text = form.cleaned_data['text']
             comment.save()
 
-            # 댓글 페이징
+            # 댓글 페이징 (중복이지만 필요한것)
             restaurants = To_mark_Comment.objects.filter(post=obj).order_by("created_date").reverse()
-
             pagenator = Paginator(restaurants, 4)
             page = request.GET.get('page')
             if page is None:
                 page = 1
 
-            # 댓글 시작페이지 끝페이지 구하기 <한번 더 댓글 조회>
+            # 댓글 시작페이지 끝페이지 구하기
             page_F = float(page)
             if page_F <= 10:
                 beginPage = 1
@@ -705,7 +695,6 @@ def to_mark_detail(request, pk):
                 pageRange.append(num)
 
             items = pagenator.get_page(page)
-
 
             # 댓글을 등록했으니 내용 초기화하시오.
             message="댓글등록"
@@ -868,9 +857,7 @@ def to_mark_comment_delete(request, pk, cpk):
 
 
 
-#######################################################################################################
-
-
+####################################################################################################### BOARD
 
 # Freetalk 목록
 def freetalk_list(request):
@@ -959,15 +946,14 @@ def freetalk_detail(request, pk):
             comment.text = form.cleaned_data['text']
             comment.save()
 
-            # 댓글 페이징
+            # 댓글 페이징 (중복이지만 필요한것)
             restaurants = Freetalk_Comment.objects.filter(post=obj).order_by("created_date").reverse()
-
             pagenator = Paginator(restaurants, 4)
             page = request.GET.get('page')
             if page is None:
                 page = 1
 
-            # 댓글 시작페이지 끝페이지 구하기 <한번 더 댓글 조회>
+            # 댓글 시작페이지 끝페이지 구하기
             page_F = float(page)
             if page_F <= 10:
                 beginPage = 1
@@ -985,7 +971,6 @@ def freetalk_detail(request, pk):
                 pageRange.append(num)
 
             items = pagenator.get_page(page)
-
 
             # 댓글을 등록했으니 내용 초기화하시오.
             message="댓글등록"
@@ -1147,11 +1132,6 @@ def freetalk_comment_delete(request, pk, cpk):
         return redirect('board:freetalk_detail', pk)
 
 
-
-#######################################################################################################
-
-
-
 # AUTH 목록
 def auth_list(request):
     restaurants = Auth.objects.all()
@@ -1239,15 +1219,14 @@ def auth_detail(request, pk):
             comment.text = form.cleaned_data['text']
             comment.save()
 
-            # 댓글 페이징
+            # 댓글 페이징 (중복이지만 필요한것)
             restaurants = Auth_Comment.objects.filter(post=obj).order_by("created_date").reverse()
-
             pagenator = Paginator(restaurants, 4)
             page = request.GET.get('page')
             if page is None:
                 page = 1
 
-            # 댓글 시작페이지 끝페이지 구하기 <한번 더 댓글 조회>
+            # 댓글 시작페이지 끝페이지 구하기
             page_F = float(page)
             if page_F <= 10:
                 beginPage = 1
@@ -1265,7 +1244,6 @@ def auth_detail(request, pk):
                 pageRange.append(num)
 
             items = pagenator.get_page(page)
-
 
             # 댓글을 등록했으니 내용 초기화하시오.
             message="댓글등록"
@@ -1427,11 +1405,6 @@ def auth_comment_delete(request, pk, cpk):
         return redirect('board:auth_detail', pk)
 
 
-
-#######################################################################################################
-
-
-
 # QUESTION 목록
 def question_list(request):
     restaurants = Question.objects.all()
@@ -1519,15 +1492,14 @@ def question_detail(request, pk):
             comment.text = form.cleaned_data['text']
             comment.save()
 
-            # 댓글 페이징
+            # 댓글 페이징 (중복이지만 필요한것)
             restaurants = Question_Comment.objects.filter(post=obj).order_by("created_date").reverse()
-
             pagenator = Paginator(restaurants, 4)
             page = request.GET.get('page')
             if page is None:
                 page = 1
 
-            # 댓글 시작페이지 끝페이지 구하기 <한번 더 댓글 조회>
+            # 댓글 시작페이지 끝페이지 구하기
             page_F = float(page)
             if page_F <= 10:
                 beginPage = 1
@@ -1545,7 +1517,6 @@ def question_detail(request, pk):
                 pageRange.append(num)
 
             items = pagenator.get_page(page)
-
 
             # 댓글을 등록했으니 내용 초기화하시오.
             message="댓글등록"
@@ -1704,4 +1675,109 @@ def question_comment_delete(request, pk, cpk):
         return redirect('board:question_detail', pk)
     else:
         comment.delete()
-        return redirect('board:question_detail', pk)                                                        
+        return redirect('board:question_detail', pk)                                            
+
+
+
+####################################################################################################### Q&A
+
+# 문의하기
+def inquiry(request):
+    # 페이징
+    restaurants = Inquiry.objects.all().order_by("created_date").reverse() #문의글
+    pagenator = Paginator(restaurants, 4)
+    page = request.GET.get('page')
+    if page is None:
+        page = 1
+
+    # 시작페이지 끝페이지 구하기
+    page_F = float(page)
+    if page_F <= 10:
+        beginPage = 1
+    else:
+        beginPage = (math.trunc(page_F / 10)) * 10 + 1
+
+    if (beginPage + 10) > pagenator.num_pages:
+        lastPage = pagenator.num_pages
+    else:
+        lastPage = beginPage + 9
+    nextRangeStartPage = lastPage + 1
+
+    pageRange = []
+    for num in range(beginPage, lastPage+1):
+        pageRange.append(num)
+
+    items = pagenator.get_page(page)
+
+
+    if request.method == 'POST':
+        form = InquiryForm(request.POST)
+        if form.is_valid():
+            # 문의 등록하기 누른 후 
+            # 로그인한 아이디 정보가져오기
+            member_id = request.session.get('member_id')
+            login = Member.objects.get(member_id=member_id)
+            inquiry = form.save(commit=False)
+            inquiry.author = login
+            inquiry.text = form.cleaned_data['text']
+            inquiry.save()
+
+            # 페이징 (중복이지만 필요한것)
+            restaurants = Inquiry.objects.all().order_by("created_date").reverse()
+            pagenator = Paginator(restaurants, 4)
+            page = request.GET.get('page')
+            if page is None:
+                page = 1
+
+            # 시작페이지 끝페이지 구하기
+            page_F = float(page)
+            if page_F <= 10:
+                beginPage = 1
+            else:
+                beginPage = (math.trunc(page_F / 10)) * 10 + 1
+
+            if (beginPage + 10) > pagenator.num_pages:
+                lastPage = pagenator.num_pages
+            else:
+                lastPage = beginPage + 9
+            nextRangeStartPage = lastPage + 1
+
+            pageRange = []
+            for num in range(beginPage, lastPage+1):
+                pageRange.append(num)
+
+            items = pagenator.get_page(page)
+
+            # 문의을 등록했으니 내용 초기화하시오.
+            message="문의등록"
+
+            return render(request, 'board/inquiry.html', {
+                'form':form,
+                'message':message,
+                'restaurants': items,
+                'restaurants_co': restaurants_co,
+                'lastPage': lastPage,
+                'pageRange': pageRange,
+                'nextRangeStartPage': nextRangeStartPage
+                })
+    else:
+        form = InquiryForm()
+        return render(request, 'board/inquiry.html', {
+            'form':form,
+            'restaurants': items,
+            'lastPage': lastPage,
+            'pageRange': pageRange,
+            'nextRangeStartPage': nextRangeStartPage
+            })
+
+
+# 문의하기 삭제
+def inquiry_delete(request, pk):
+    inquiry = Inquiry.objects.get(pk=pk)
+
+    if not inquiry.author.member_id == request.session.get('member_id'):
+        return redirect('board:inquiry')
+    else:
+        inquiry.delete()
+        return redirect('board:inquiry')   
+     
