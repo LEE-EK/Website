@@ -1755,7 +1755,6 @@ def inquiry(request):
                 'form':form,
                 'message':message,
                 'restaurants': items,
-                'restaurants_co': restaurants_co,
                 'lastPage': lastPage,
                 'pageRange': pageRange,
                 'nextRangeStartPage': nextRangeStartPage
