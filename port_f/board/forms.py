@@ -1,7 +1,7 @@
 from django import forms
-from board.models import Notice,From_mark,To_mark,Freetalk,Auth,Question,Inquiry
+from board.models import Notice,From_mark,To_mark,Freetalk,Auth,Question,Inquiry,Report
 from board.models import Notice_Comment,From_mark_Comment,To_mark_Comment,\
-                            Freetalk_Comment,Auth_Comment,Question_Comment
+                            Freetalk_Comment,Auth_Comment,Question_Comment,Inquiry_Comment,Report_Comment
 from django_summernote.widgets import SummernoteWidget, SummernoteInplaceWidget
 
 
@@ -209,6 +209,50 @@ class InquiryForm(forms.ModelForm):
         }
 
         widgets = {
-            "text":forms.Textarea(attrs={'placeholder':'※모든 문의글은 비밀글 처리됩니다※','class':'form-control','rows':5}),
+            "text":forms.Textarea(attrs={'class':'form-control','rows':5}),
         }
 
+class Inquiry_CommentForm(forms.ModelForm):
+    class Meta:
+        model = Inquiry_Comment
+
+        fields = ['text',]
+
+        labels = {
+            "text" : False
+        }
+
+        widgets = {
+            "text":forms.Textarea(attrs={'class':'form-control','rows':5}),
+        }        
+
+#######################################################################################################
+
+class ReportForm(forms.ModelForm):
+    class Meta:
+        model = Report
+
+        fields = ['text',]
+
+        labels = {
+            "text" : False
+        }
+
+        widgets = {
+            "text":forms.Textarea(attrs={'class':'form-control','rows':5}),
+        }
+
+
+class Report_CommentForm(forms.ModelForm):
+    class Meta:
+        model = Report_Comment
+
+        fields = ['text',]
+
+        labels = {
+            "text" : False
+        }
+
+        widgets = {
+            "text":forms.Textarea(attrs={'class':'form-control','rows':5}),
+        }         

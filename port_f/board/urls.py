@@ -157,5 +157,24 @@ urlpatterns = [
 
     # /inquiry_delete - 문의하기 삭제
     path('inquiry/<int:pk>/delete', views.inquiry_delete, name='inquiry_delete'),
+
+    # /inquiry_comment - 문의하기 댓글
+    path('inquiry/<int:pk>/comment', views.inquiry_comment, name='inquiry_comment'),
+
+    # /inquiry_comment_delete - 문의댓글 삭제
+    path('inquiry/<int:pk>/comment_delete', views.inquiry_comment_delete, name='inquiry_comment_delete'),
+
+
+    # /report - 신고하기
+    path('report/', views.report, name='report'),
+
+    # /report_delete - 신고하기 삭제
+    path('report/<int:pk>/delete', views.report_delete, name='report_delete'),
+
+    # /report_comment - 신고하기 댓글
+    path('report/<int:pk>/comment', views.report_comment, name='report_comment'),
+
+    # /report_comment_delete - 신고댓글 삭제
+    path('report/<int:pk>/comment_delete', views.report_comment_delete, name='report_comment_delete'),
    
 ]

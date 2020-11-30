@@ -4,13 +4,13 @@ from django.core.paginator import Paginator
 
 from member.models import Member
 
-from board.models import Notice,From_mark,To_mark,Freetalk,Auth,Question,Inquiry
+from board.models import Notice,From_mark,To_mark,Freetalk,Auth,Question,Inquiry,Report
 from board.models import Notice_Comment,From_mark_Comment,To_mark_Comment,\
-                            Freetalk_Comment,Auth_Comment,Question_Comment
+                            Freetalk_Comment,Auth_Comment,Question_Comment,Inquiry_Comment,Report_Comment
 
-from .forms import NoticeForm,From_markForm,To_markForm,FreetalkForm,AuthForm,QuestionForm,InquiryForm
+from .forms import NoticeForm,From_markForm,To_markForm,FreetalkForm,AuthForm,QuestionForm,InquiryForm,ReportForm
 from .forms import Notice_CommentForm,From_mark_CommentForm,To_mark_CommentForm,\
-                    Freetalk_CommentForm,Auth_CommentForm,Question_CommentForm
+                    Freetalk_CommentForm,Auth_CommentForm,Question_CommentForm,Inquiry_CommentForm,Report_CommentForm
 
 import math
 
@@ -61,13 +61,19 @@ def notice_list(request):
 def notice_detail(request, pk):
     # 게시글 번호
     obj = Notice.objects.get(pk=pk) 
+    
     # 게시글 작성자 회원정보 보내기 'create'
-    create = Member.objects.get(nickname=obj.name)
+    # 회원이 존재하지 않을시 삭제하기
+    try:
+        create = Member.objects.get(nickname=obj.name)
+    except:
+        obj.delete()
+        return redirect('board:notice_list')
 
     # 방문할때 마다 게시글 조회수 증가
     obj.hits=obj.hits+1
     obj.save()
-    
+
     
     # 댓글 페이징
     restaurants = Notice_Comment.objects.filter(post=obj).order_by("created_date").reverse()
@@ -146,7 +152,8 @@ def notice_detail(request, pk):
                 'lastPage': lastPage,
                 'pageRange': pageRange,
                 'nextRangeStartPage': nextRangeStartPage,
-                'message': message })
+                'message': message,
+                })
     else:
         form = Notice_CommentForm()   
         return render(request, 'board/notice_detail.html', {
@@ -350,7 +357,12 @@ def from_mark_detail(request, pk):
     # 게시글 번호
     obj = From_mark.objects.get(pk=pk) 
     # 게시글 작성자 회원정보 보내기 'create'
-    create = Member.objects.get(nickname=obj.name)
+    # 회원이 존재하지 않을시 삭제하기
+    try:
+        create = Member.objects.get(nickname=obj.name)
+    except:
+        obj.delete()
+        return redirect('board:from_mark_list')
 
     # 방문할때 마다 게시글 조회수 증가
     obj.hits=obj.hits+1
@@ -623,7 +635,12 @@ def to_mark_detail(request, pk):
     # 게시글 번호
     obj = To_mark.objects.get(pk=pk) 
     # 게시글 작성자 회원정보 보내기 'create'
-    create = Member.objects.get(nickname=obj.name)
+    # 회원이 존재하지 않을시 삭제하기
+    try:
+        create = Member.objects.get(nickname=obj.name)
+    except:
+        obj.delete()
+        return redirect('board:to_mark_list')
 
     # 방문할때 마다 게시글 조회수 증가
     obj.hits=obj.hits+1
@@ -899,7 +916,12 @@ def freetalk_detail(request, pk):
     # 게시글 번호
     obj = Freetalk.objects.get(pk=pk) 
     # 게시글 작성자 회원정보 보내기 'create'
-    create = Member.objects.get(nickname=obj.name)
+    # 회원이 존재하지 않을시 삭제하기
+    try:
+        create = Member.objects.get(nickname=obj.name)
+    except:
+        obj.delete()
+        return redirect('board:freetalk_list')
 
     # 방문할때 마다 게시글 조회수 증가
     obj.hits=obj.hits+1
@@ -1172,7 +1194,12 @@ def auth_detail(request, pk):
     # 게시글 번호
     obj = Auth.objects.get(pk=pk) 
     # 게시글 작성자 회원정보 보내기 'create'
-    create = Member.objects.get(nickname=obj.name)
+    # 회원이 존재하지 않을시 삭제하기
+    try:
+        create = Member.objects.get(nickname=obj.name)
+    except:
+        obj.delete()
+        return redirect('board:auth_list')
 
     # 방문할때 마다 게시글 조회수 증가
     obj.hits=obj.hits+1
@@ -1445,8 +1472,12 @@ def question_detail(request, pk):
     # 게시글 번호
     obj = Question.objects.get(pk=pk) 
     # 게시글 작성자 회원정보 보내기 'create'
-    create = Member.objects.get(nickname=obj.name)
-
+    # 회원이 존재하지 않을시 삭제하기
+    try:
+        create = Member.objects.get(nickname=obj.name)
+    except:
+        obj.delete()
+        return redirect('board:question_list')
     # 방문할때 마다 게시글 조회수 증가
     obj.hits=obj.hits+1
     obj.save()
@@ -1685,6 +1716,7 @@ def question_comment_delete(request, pk, cpk):
 def inquiry(request):
     # 페이징
     restaurants = Inquiry.objects.all().order_by("created_date").reverse() #문의글
+    restaurants_co = Inquiry_Comment.objects.all().order_by("created_date").reverse() #문의댓글글
     pagenator = Paginator(restaurants, 4)
     page = request.GET.get('page')
     if page is None:
@@ -1748,13 +1780,14 @@ def inquiry(request):
 
             items = pagenator.get_page(page)
 
-            # 문의을 등록했으니 내용 초기화하시오.
+            # 문의를 등록했으니 내용 초기화하시오.
             message="문의등록"
 
             return render(request, 'board/inquiry.html', {
                 'form':form,
                 'message':message,
                 'restaurants': items,
+                'restaurants_co':restaurants_co,
                 'lastPage': lastPage,
                 'pageRange': pageRange,
                 'nextRangeStartPage': nextRangeStartPage
@@ -1764,6 +1797,7 @@ def inquiry(request):
         return render(request, 'board/inquiry.html', {
             'form':form,
             'restaurants': items,
+            'restaurants_co':restaurants_co,
             'lastPage': lastPage,
             'pageRange': pageRange,
             'nextRangeStartPage': nextRangeStartPage
@@ -1779,4 +1813,170 @@ def inquiry_delete(request, pk):
     else:
         inquiry.delete()
         return redirect('board:inquiry')   
-     
+
+
+# 문의하기 댓글
+def inquiry_comment(request, pk):
+    obj = Inquiry.objects.get(pk=pk) 
+    if request.method == 'POST':
+        form = Inquiry_CommentForm(request.POST)
+
+        if form.is_valid():
+            # 문의 댓글등록하기 누른 후 
+            # 로그인한 아이디 정보가져오기
+            member_id = request.session.get('member_id')
+            login = Member.objects.get(member_id=member_id)
+            inquiry_comment = form.save(commit=False)
+            inquiry_comment.author = login
+            inquiry_comment.post = obj
+            inquiry_comment.text = form.cleaned_data['text']
+            inquiry_comment.save()
+            return redirect('board:inquiry')
+    else:
+        return redirect('board:inquiry') 
+
+
+# 문의댓글 삭제
+def inquiry_comment_delete(request, pk):
+    inquiry_comment = Inquiry_Comment.objects.get(pk=pk)
+
+    if not inquiry_comment.author.member_id == request.session.get('member_id'):
+        return redirect('board:inquiry')
+    else:
+        inquiry_comment.delete()
+        return redirect('board:inquiry')   
+
+
+# 신고하기
+def report(request):
+    # 페이징
+    restaurants = Report.objects.all().order_by("created_date").reverse() #문의글
+    restaurants_co = Report_Comment.objects.all().order_by("created_date").reverse() #문의댓글글
+    pagenator = Paginator(restaurants, 4)
+    page = request.GET.get('page')
+    if page is None:
+        page = 1
+
+    # 시작페이지 끝페이지 구하기
+    page_F = float(page)
+    if page_F <= 10:
+        beginPage = 1
+    else:
+        beginPage = (math.trunc(page_F / 10)) * 10 + 1
+
+    if (beginPage + 10) > pagenator.num_pages:
+        lastPage = pagenator.num_pages
+    else:
+        lastPage = beginPage + 9
+    nextRangeStartPage = lastPage + 1
+
+    pageRange = []
+    for num in range(beginPage, lastPage+1):
+        pageRange.append(num)
+
+    items = pagenator.get_page(page)
+
+
+    if request.method == 'POST':
+        form = ReportForm(request.POST)
+        if form.is_valid():
+            # 신고 등록하기 누른 후 
+            # 로그인한 아이디 정보가져오기
+            member_id = request.session.get('member_id')
+            login = Member.objects.get(member_id=member_id)
+            report = form.save(commit=False)
+            report.author = login
+            report.text = form.cleaned_data['text']
+            report.save()
+
+            # 페이징 (중복이지만 필요한것)
+            restaurants = Report.objects.all().order_by("created_date").reverse()
+            pagenator = Paginator(restaurants, 4)
+            page = request.GET.get('page')
+            if page is None:
+                page = 1
+
+            # 시작페이지 끝페이지 구하기
+            page_F = float(page)
+            if page_F <= 10:
+                beginPage = 1
+            else:
+                beginPage = (math.trunc(page_F / 10)) * 10 + 1
+
+            if (beginPage + 10) > pagenator.num_pages:
+                lastPage = pagenator.num_pages
+            else:
+                lastPage = beginPage + 9
+            nextRangeStartPage = lastPage + 1
+
+            pageRange = []
+            for num in range(beginPage, lastPage+1):
+                pageRange.append(num)
+
+            items = pagenator.get_page(page)
+
+            # 신고를 등록했으니 내용 초기화하시오.
+            message="신고등록"
+
+            return render(request, 'board/report.html', {
+                'form':form,
+                'message':message,
+                'restaurants': items,
+                'restaurants_co':restaurants_co,
+                'lastPage': lastPage,
+                'pageRange': pageRange,
+                'nextRangeStartPage': nextRangeStartPage
+                })
+    else:
+        form = ReportForm()
+        return render(request, 'board/report.html', {
+            'form':form,
+            'restaurants': items,
+            'restaurants_co':restaurants_co,
+            'lastPage': lastPage,
+            'pageRange': pageRange,
+            'nextRangeStartPage': nextRangeStartPage
+            })
+
+
+# 신고하기 삭제
+def report_delete(request, pk):
+    report = Report.objects.get(pk=pk)
+
+    if not report.author.member_id == request.session.get('member_id'):
+        return redirect('board:report')
+    else:
+        report.delete()
+        return redirect('board:report')   
+
+
+# 신고하기 댓글
+def report_comment(request, pk):
+    obj = Report.objects.get(pk=pk) 
+    if request.method == 'POST':
+        form = Report_CommentForm(request.POST)
+
+        if form.is_valid():
+            # 신고 댓글등록하기 누른 후 
+            # 로그인한 아이디 정보가져오기
+            member_id = request.session.get('member_id')
+            login = Member.objects.get(member_id=member_id)
+            report_comment = form.save(commit=False)
+            report_comment.author = login
+            report_comment.post = obj
+            report_comment.text = form.cleaned_data['text']
+            report_comment.save()
+            return redirect('board:report')
+    else:
+        return redirect('board:report') 
+
+
+# 신고댓글 삭제
+def report_comment_delete(request, pk):
+    report_comment = Report_Comment.objects.get(pk=pk)
+
+    if not report_comment.author.member_id == request.session.get('member_id'):
+        return redirect('board:report')
+    else:
+        report_comment.delete()
+        return redirect('board:report')           

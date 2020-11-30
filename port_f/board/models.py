@@ -187,3 +187,39 @@ class Inquiry(models.Model):
     def __str__(self):
         return self.text
        
+# Inquiry_Comment table
+class Inquiry_Comment(models.Model):
+    objects = models.Manager()
+    author = models.ForeignKey('member.member', on_delete=models.CASCADE)
+    post = models.ForeignKey('Inquiry', on_delete = models.CASCADE)
+    text = models.TextField()
+    created_date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.text
+
+
+
+#######################################################################################################
+
+# Report table
+class Report(models.Model):
+    objects = models.Manager()
+    author = models.ForeignKey('member.member', on_delete=models.CASCADE)
+    text = models.TextField()
+    created_date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.text
+
+
+# Report_Comment table
+class Report_Comment(models.Model):
+    objects = models.Manager()
+    author = models.ForeignKey('member.member', on_delete=models.CASCADE)
+    post = models.ForeignKey('Report', on_delete = models.CASCADE)
+    text = models.TextField()
+    created_date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.text        
