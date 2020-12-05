@@ -5,12 +5,10 @@ from django.core.paginator import Paginator
 from member.models import Member
 
 from board.models import Notice,From_mark,To_mark,Freetalk,Auth,Question,Inquiry,Report
-from board.models import Notice_Comment,From_mark_Comment,To_mark_Comment,\
-                            Freetalk_Comment,Auth_Comment,Question_Comment,Inquiry_Comment,Report_Comment
+from board.models import To_mark_Comment,Freetalk_Comment,Auth_Comment,Question_Comment,Inquiry_Comment,Report_Comment
 
 from .forms import NoticeForm,From_markForm,To_markForm,FreetalkForm,AuthForm,QuestionForm,InquiryForm,ReportForm
-from .forms import Notice_CommentForm,From_mark_CommentForm,To_mark_CommentForm,\
-                    Freetalk_CommentForm,Auth_CommentForm,Question_CommentForm,Inquiry_CommentForm,Report_CommentForm
+from .forms import To_mark_CommentForm,Freetalk_CommentForm,Auth_CommentForm,Question_CommentForm,Inquiry_CommentForm,Report_CommentForm
 
 import math
 
@@ -74,97 +72,10 @@ def notice_detail(request, pk):
     obj.hits=obj.hits+1
     obj.save()
 
-    
-    # 댓글 페이징
-    restaurants = Notice_Comment.objects.filter(post=obj).order_by("created_date").reverse()
-    pagenator = Paginator(restaurants, 4)
-    page = request.GET.get('page')
-    if page is None:
-        page = 1
-
-    # 댓글 시작페이지 끝페이지 구하기
-    page_F = float(page)
-    if page_F <= 10:
-        beginPage = 1
-    else:
-        beginPage = (math.trunc(page_F / 10)) * 10 + 1
-
-    if (beginPage + 10) > pagenator.num_pages:
-        lastPage = pagenator.num_pages
-    else:
-        lastPage = beginPage + 9
-    nextRangeStartPage = lastPage + 1
-
-    pageRange = []
-    for num in range(beginPage, lastPage+1):
-        pageRange.append(num)
-
-    items = pagenator.get_page(page)
-
-    # 댓글 form
-    if request.method == 'POST':
-        form = Notice_CommentForm(request.POST)
-        if form.is_valid():
-            # 댓글 등록하기 누른 후 
-            # 로그인한 아이디 정보가져오기
-            member_id = request.session.get('member_id')
-            login = Member.objects.get(member_id=member_id)
-            comment = form.save(commit=False)
-            comment.author = login
-            comment.post = obj
-            comment.text = form.cleaned_data['text']
-            comment.save()
-
-            # 댓글 페이징 (중복이지만 필요한것)
-            restaurants = Notice_Comment.objects.filter(post=obj).order_by("created_date").reverse()
-            pagenator = Paginator(restaurants, 4)
-            page = request.GET.get('page')
-            if page is None:
-                page = 1
-
-            # 댓글 시작페이지 끝페이지 구하기
-            page_F = float(page)
-            if page_F <= 10:
-                beginPage = 1
-            else:
-                beginPage = (math.trunc(page_F / 10)) * 10 + 1
-
-            if (beginPage + 10) > pagenator.num_pages:
-                lastPage = pagenator.num_pages
-            else:
-                lastPage = beginPage + 9
-            nextRangeStartPage = lastPage + 1
-
-            pageRange = []
-            for num in range(beginPage, lastPage+1):
-                pageRange.append(num)
-
-            items = pagenator.get_page(page)
-
-            # 댓글을 등록했으니 내용 초기화하시오.
-            message="댓글등록"
-
-            return render(request, 'board/notice_detail.html', {
-                'form':form,
-                'obj':obj,
-                'create':create,
-                'restaurants': items,
-                'lastPage': lastPage,
-                'pageRange': pageRange,
-                'nextRangeStartPage': nextRangeStartPage,
-                'message': message,
-                })
-    else:
-        form = Notice_CommentForm()   
-        return render(request, 'board/notice_detail.html', {
-            'form':form,
-            'obj':obj,
-            'create':create,
-            'restaurants': items,
-            'lastPage': lastPage,
-            'pageRange': pageRange,
-            'nextRangeStartPage': nextRangeStartPage,
-             })
+    return render(request, 'board/notice_detail.html', {
+        'obj':obj,
+        'create':create
+    })
 
 # 공지사항 작성페이지
 def notice_create(request):
@@ -291,18 +202,6 @@ def notice_search(request):
         message = "새로고침"
         return render(request, 'board/notice_search.html', {'message':message})
 
-# 공지사항 댓글 삭제
-def notice_comment_delete(request, pk, cpk):
-    comment = Notice_Comment.objects.get(pk=cpk)
-
-    if not comment.author.member_id == request.session.get('member_id'):
-        return redirect('board:notice_detail', pk)
-    else:
-        comment.delete()
-        return redirect('board:notice_detail', pk)
-
-   
-
 # 스케쥴 페이지
 class ScheduleView(TemplateView):
     template_name = 'board/schedule.html'  
@@ -369,95 +268,10 @@ def from_mark_detail(request, pk):
     obj.save()
     
     
-    # 댓글 페이징
-    restaurants = From_mark_Comment.objects.filter(post=obj).order_by("created_date").reverse()
-    pagenator = Paginator(restaurants, 4)
-    page = request.GET.get('page')
-    if page is None:
-        page = 1
-
-    # 댓글 시작페이지 끝페이지 구하기
-    page_F = float(page)
-    if page_F <= 10:
-        beginPage = 1
-    else:
-        beginPage = (math.trunc(page_F / 10)) * 10 + 1
-
-    if (beginPage + 10) > pagenator.num_pages:
-        lastPage = pagenator.num_pages
-    else:
-        lastPage = beginPage + 9
-    nextRangeStartPage = lastPage + 1
-
-    pageRange = []
-    for num in range(beginPage, lastPage+1):
-        pageRange.append(num)
-
-    items = pagenator.get_page(page)
-
-    # 댓글 form
-    if request.method == 'POST':
-        form = From_mark_CommentForm(request.POST)
-        if form.is_valid():
-            # 댓글 등록하기 누른 후 
-            # 로그인한 아이디 정보가져오기
-            member_id = request.session.get('member_id')
-            login = Member.objects.get(member_id=member_id)
-            comment = form.save(commit=False)
-            comment.author = login
-            comment.post = obj
-            comment.text = form.cleaned_data['text']
-            comment.save()
-
-            # 댓글 페이징 (중복이지만 필요한것)
-            restaurants = From_mark_Comment.objects.filter(post=obj).order_by("created_date").reverse()
-            pagenator = Paginator(restaurants, 4)
-            page = request.GET.get('page')
-            if page is None:
-                page = 1
-
-            # 댓글 시작페이지 끝페이지 구하기
-            page_F = float(page)
-            if page_F <= 10:
-                beginPage = 1
-            else:
-                beginPage = (math.trunc(page_F / 10)) * 10 + 1
-
-            if (beginPage + 10) > pagenator.num_pages:
-                lastPage = pagenator.num_pages
-            else:
-                lastPage = beginPage + 9
-            nextRangeStartPage = lastPage + 1
-
-            pageRange = []
-            for num in range(beginPage, lastPage+1):
-                pageRange.append(num)
-
-            items = pagenator.get_page(page)
-
-            # 댓글을 등록했으니 내용 초기화하시오.
-            message="댓글등록"
-
-            return render(request, 'board/from_mark_detail.html', {
-                'form':form,
-                'obj':obj,
-                'create':create,
-                'restaurants': items,
-                'lastPage': lastPage,
-                'pageRange': pageRange,
-                'nextRangeStartPage': nextRangeStartPage,
-                'message': message })
-    else:
-        form = From_mark_CommentForm()   
-        return render(request, 'board/from_mark_detail.html', {
-            'form':form,
-            'obj':obj,
-            'create':create,
-            'restaurants': items,
-            'lastPage': lastPage,
-            'pageRange': pageRange,
-            'nextRangeStartPage': nextRangeStartPage,
-             })
+    return render(request, 'board/from_mark_detail.html', {
+        'obj':obj,
+        'create':create
+    })
 
 # FROM_MARK 작성페이지
 def from_mark_create(request):

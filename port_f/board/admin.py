@@ -1,22 +1,15 @@
 from django.contrib import admin
 from board.models import Notice,From_mark,To_mark,Freetalk,Auth,Question,Inquiry,Report
-from board.models import Notice_Comment, From_mark_Comment,To_mark_Comment,\
-                            Freetalk_Comment,Auth_Comment,Question_Comment,Inquiry_Comment,Report_Comment
+from board.models import To_mark_Comment,Freetalk_Comment,Auth_Comment,Question_Comment,Inquiry_Comment,Report_Comment
 from django_summernote.admin import SummernoteModelAdmin
 
 
 class NoticeAdmin(SummernoteModelAdmin):
     list_display = ('id', 'subject', 'name', 'memo', 'hits', 'create_date')
 
-class Notice_CommentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'author', 'post', 'text', 'created_date')
-
 
 class From_markAdmin(SummernoteModelAdmin):
     list_display = ('id', 'subject', 'name', 'memo', 'hits', 'create_date')
-
-class From_mark_CommentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'author', 'post', 'text', 'created_date')
 
 
 class To_markAdmin(SummernoteModelAdmin):
@@ -61,10 +54,8 @@ class Report_CommentAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Notice,NoticeAdmin)
-admin.site.register(Notice_Comment,Notice_CommentAdmin)
 
 admin.site.register(From_mark,From_markAdmin)
-admin.site.register(From_mark_Comment,From_mark_CommentAdmin)
 
 admin.site.register(To_mark,To_markAdmin)
 admin.site.register(To_mark_Comment,To_mark_CommentAdmin)

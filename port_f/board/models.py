@@ -23,17 +23,6 @@ class Notice(models.Model):
     def __str__(self):#객체의 문자열 메소드
         return self.subject
 
-# Notice_Comment table
-class Notice_Comment(models.Model):
-    objects = models.Manager()
-    author = models.ForeignKey('member.member', on_delete=models.CASCADE)
-    post = models.ForeignKey('Notice', on_delete = models.CASCADE)
-    text = models.TextField()
-    created_date = models.DateTimeField(default=timezone.now)
-
-    def __str__(self):
-        return self.text
-
 #######################################################################################################
 
 # From_mark table
@@ -50,17 +39,6 @@ class From_mark(models.Model):
 
     def __str__(self):
         return self.subject
-
-# From_mark_Comment table
-class From_mark_Comment(models.Model):
-    objects = models.Manager()
-    author = models.ForeignKey('member.member', on_delete=models.CASCADE)
-    post = models.ForeignKey('From_mark', on_delete = models.CASCADE)
-    text = models.TextField()
-    created_date = models.DateTimeField(default=timezone.now)
-
-    def __str__(self):
-        return self.text
 
 #######################################################################################################
 

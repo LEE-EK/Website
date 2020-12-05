@@ -94,68 +94,6 @@ table {
 #control{display:none}
 
 
-/* 댓글작성창 */
-.comment-bottom {
-    width: 700px;
-    
-}
-
-/* 댓글창 */
-#comment {
-    width: 700px;
-    border-top: 1px solid #d7d5d5;
-}
-
-.comment-list {
-    width: 700px;
-    position: relative;
-    overflow: hidden;
-    border: 1px solid #d7d5d5;
-    border-top: none;
-    color: #353535;
-    padding: 12px 0px 7px;
-}
-
-.comment-name {
-    font-weight: bold;
-    padding: 0px 20px 10px 20px;
-}
-.comment-memo {
-    clear: both;
-    border-top: 1px solid #e9e9e9;
-    padding: 15px 20px 10px 20px;
-}
-.btn {
-    font-size: 13px;
-    font-weight: bold;
-    background-color: #FFD633;
-    border: 1px solid white;
-    color: #444;
-    float: right;
-    margin-bottom: 10px;
-}
-
-.btn:hover {
-    background-color: #444;
-    color: white;
-}
-
-/* 댓글 수정삭제 버튼 */
-.but {
-    color: red;
-}
-.but:hover {
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.co_update1 {
-    display:block;
-}
-.co_update2 {
-    display:none;
-}
-
 </style>
 <!-- 테이블 상단 -->
 <table cellpadding="0" cellspacing="0" border="0" class="tbl_common_view">
@@ -207,72 +145,6 @@ table {
 </div>
 <br><br>
 
-<!-- 댓글 작성창 -->
-<div class="comment-bottom">
-    {% if request.session.member_id %}
-    <form method="POST" action="{% url 'board:notice_detail' pk=obj.pk %}" enctype="multipart/form-data">
-        <input type="submit" id="button1" class="btn btn-primary" value="등록하기">
-        {% csrf_token %}
-        {{ form.as_p }}
-    </form>
-    {% else %}
-    <div class="alert alert-warning">로그인된 사용자만 댓글을 작성할 수 있습니다.</div>
-    {% endif %}
-</div>
-
-<br>
-
-<!-- 댓글 창 -->
-<div id="comment">
-    {% for comment in restaurants %}
-    <div class="comment-list">
-        <div class="comment-name">{{ comment.author }}&nbsp;&nbsp;
-            <small>{{ comment.created_date }}</small>&nbsp;&nbsp;
-            {% if comment.author.member_id == request.session.member_id %}
-            <small><a href="{% url 'board:notice_comment_delete' pk=obj.pk cpk=comment.pk %}" class="but">삭제</a></small>
-            {% endif %}
-        </div>
-        <div class="comment-memo">
-            <p>{{ comment.text|linebreaks }}</p>
-        </div>
-        <br>
-    </div>
-    {% empty %}
-    <div class="comment-list">
-        <p style="padding-left: 15px;">작성된 댓글이 없습니다!</p>
-    </div>
-    {% endfor %}
-</div>
-
-<!-- 페이징 (현재페이지일 경우 굵게 표시<b>)-->
-    <br>   
-    <table cellspacing=1 width=700 class="tbl_page">
-        <tr>
-        <td>
-        {% if restaurants.has_previous %}
-        <a href="?page=1"><b>&laquo;</b></a>
-        {%  endif %}
-        
-        {% for pageNum in pageRange %}
-            {% if restaurants.number == pageNum %}
-                <spen class="current">
-                    [
-                    <b>{{ restaurants.number }}</b> 
-                    ]
-                </spen>
-            {% else %}
-                <a href="?page={{ pageNum }}">[{{ pageNum }}]</a>
-            {% endif %}
-        {% endfor %}
-        
-        {% if restaurants.paginator.num_pages > lastPage %}
-            <a href="?page={{ nextRangeStartPage }}"><b>&raquo;</b></a>
-        {% endif %}
-        </td>
-        </tr>
-    </table>
-
-
 
 
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -303,14 +175,6 @@ function delete_popup(){
         alert("경고");
         window.location.href = "{% url 'board:notice_list' %}";
     }
-}
-
-
-
-/* 댓글 등록하기 누른 후 내용 초기화 */
-var message = "{{ message }}";
-if (message="댓글등록"){
-    $('.form-control').val('');
 }
 
 

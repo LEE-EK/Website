@@ -1,7 +1,6 @@
 from django import forms
 from board.models import Notice,From_mark,To_mark,Freetalk,Auth,Question,Inquiry,Report
-from board.models import Notice_Comment,From_mark_Comment,To_mark_Comment,\
-                            Freetalk_Comment,Auth_Comment,Question_Comment,Inquiry_Comment,Report_Comment
+from board.models import To_mark_Comment,Freetalk_Comment,Auth_Comment,Question_Comment,Inquiry_Comment,Report_Comment
 from django_summernote.widgets import SummernoteWidget, SummernoteInplaceWidget
 
 
@@ -22,19 +21,6 @@ class NoticeForm(forms.ModelForm):
             'memo': SummernoteWidget(attrs={'class':'memo'})
         }
    
-class Notice_CommentForm(forms.ModelForm):
-    class Meta:
-        model = Notice_Comment
-
-        fields = ['text',]
-
-        labels = {
-            "text" : False
-        }
-
-        widgets = {
-            "text":forms.Textarea(attrs={'placeholder':'댓글을 작성해 주세요.','class':'form-control','rows':5}),
-        }
 
 #######################################################################################################
 
@@ -52,20 +38,6 @@ class From_markForm(forms.ModelForm):
         widgets = {
             'subject': forms.TextInput(attrs={'placeholder':'게시글 제목을 입력하세요.'}),
             'memo': SummernoteWidget(attrs={'class':'memo'})
-        }
-      
-class From_mark_CommentForm(forms.ModelForm):
-    class Meta:
-        model = From_mark_Comment
-
-        fields = ['text',]
-
-        labels = {
-            "text" : False
-        }
-
-        widgets = {
-            "text":forms.Textarea(attrs={'placeholder':'댓글을 작성해 주세요.','class':'form-control','rows':5}),
         }
         
 #######################################################################################################

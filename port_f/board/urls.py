@@ -29,9 +29,6 @@ urlpatterns = [
     # /notice_search - 공지사항 검색
     path('notice_search/', views.notice_search, name='notice_search'),
 
-    # /notice_comment_delete - 공지사항 댓글 삭제
-    path('notice_list/<int:pk>/comment/<int:cpk>/delete', views.notice_comment_delete, name='notice_comment_delete'),
-
     # /schedule - 스케쥴 페이지
     path('schedule/', views.ScheduleView.as_view(), name='schedule'),
 
@@ -60,9 +57,6 @@ urlpatterns = [
 
     # /from_mark_search - FROM_MARK 검색
     path('from_mark_search/', views.from_mark_search, name='from_mark_search'),
-
-    # /from_mark_comment_delete - FROM_MARK 댓글 삭제
-    path('from_mark_list/<int:pk>/comment/<int:cpk>/delete', views.from_mark_comment_delete, name='from_mark_comment_delete'),
 
     # /to_mark_list - TO_MARK 목록
     path('to_mark_list/', views.to_mark_list, name='to_mark_list'),
