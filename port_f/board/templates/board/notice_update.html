@@ -102,6 +102,10 @@ function delete_popup(){
     }
 }
 var message = "{{ message }}";
+if (message=="비관리자"){
+    alert("관리자가 아닙니다");
+    window.location.href = "{% url 'board:notice_list' %}";
+}
 if (message=="한계초과"){
     alert("게시글 내용을 초과하였습니다");
     window.location.href = "{% url 'board:notice_list' %}";

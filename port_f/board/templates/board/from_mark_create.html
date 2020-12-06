@@ -67,8 +67,8 @@ a.btn-dark:hover {
 <script>
 
 var message = "{{ message }}";
-if (message=="비로그인"){
-    alert("로그인 해주세요");
+if (message=="비관리자"){
+    alert("관리자가 아닙니다");
     window.location.href = "{% url 'board:from_mark_list' %}";
 }
 if (message=="한계초과"){

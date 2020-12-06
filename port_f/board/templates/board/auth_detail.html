@@ -230,7 +230,7 @@ table {
     <div class="comment-list">
         <div class="comment-name">{{ comment.author }}&nbsp;&nbsp;
             <small>{{ comment.created_date }}</small>&nbsp;&nbsp;
-            {% if comment.author.member_id == request.session.member_id %}
+            {% if request.session.member_id == comment.author.member_id or request.session.member_id == "admin1234" %}
             <small><a href="{% url 'board:auth_comment_delete' pk=obj.pk cpk=comment.pk %}" class="but">삭제</a></small>
             {% endif %}
         </div>
@@ -284,7 +284,7 @@ table {
 
 /* 로그인한 유저가 작성한 글인지 확인 */
 /* 일치시 수정삭제 보이기 */
-if("{{ request.session.member_id }}" == "{{ create.member_id }}"){
+if("{{ request.session.member_id }}" == "{{ create.member_id }}" || "{{ request.session.member_id }}" == "admin1234"){
     $("#control").show();
 }
 else {
@@ -294,7 +294,7 @@ else {
 
 /* 게시글 삭제여부 팝업창 */
 function delete_popup(){
-    if("{{ request.session.member_id }}" == "{{ create.member_id }}"){
+    if("{{ request.session.member_id }}" == "{{ create.member_id }}" || "{{ request.session.member_id }}" == "admin1234"){
         var result = confirm("정말 삭제하시겠습니까?");
         if(result)
         {

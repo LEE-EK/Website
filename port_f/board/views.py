@@ -79,66 +79,75 @@ def notice_detail(request, pk):
 
 # 공지사항 작성페이지
 def notice_create(request):
-    if request.method == 'POST':
-        form = NoticeForm(request.POST)
-        if form.is_valid():
-            # 로그인한경우
-            member_id = request.session.get('member_id')
-            obj = Member.objects.get(member_id=member_id)
-            name = obj.nickname
+    # 관리자인 경우
+    member_id = request.session.get('member_id')
+    if member_id == "admin1234":
+        if request.method == 'POST':
+            form = NoticeForm(request.POST)
+            if form.is_valid():
+                obj = Member.objects.get(member_id=member_id)
+                name = obj.nickname
 
-            # Board Model에 제목, 작성자, 내용을 등록시킨다.
-            obj = Notice(subject=request.POST['subject'], name=name, memo=request.POST['memo'])
-            obj.save()
-            return redirect('board:notice_list')
-        else:    
-            message="한계초과"
-            form = NoticeForm()
-            return render(request, 'board/notice_create.html', {'form':form, 'message':message})
-    else:
-        if request.session.get('member_id'):
+                # Board Model에 제목, 작성자, 내용을 등록시킨다.
+                obj = Notice(subject=request.POST['subject'], name=name, memo=request.POST['memo'])
+                obj.save()
+                return redirect('board:notice_list') 
+            else:    
+                message="한계초과"
+                form = NoticeForm()
+                return render(request, 'board/notice_create.html', {'form':form, 'message':message})
+        else:
             form = NoticeForm()
             return render(request, 'board/notice_create.html', {'form':form})
-        # 로그인안한경우    
-        else:
-            message="비로그인"
-            form = NoticeForm()
-            return render(request, 'board/notice_create.html', {'form':form, 'message':message})
+    # 관리자가 아닌경우    
+    else:
+        message="비관리자"
+        form = NoticeForm()
+        return render(request, 'board/notice_create.html', {'form':form, 'message':message})
 
 # 공지사항 수정페이지
 def notice_update(request, pk):
-    if request.method == 'POST':
-        form = NoticeForm(request.POST)
-        if form.is_valid():
-            obj = Notice.objects.get(pk=pk)
-            obj.subject = request.POST['subject']
-            obj.memo = request.POST['memo']
-            obj.save()
-            return redirect('board:notice_list')
-
+    # 관리자인 경우
+    member_id = request.session.get('member_id')
+    obj = Notice.objects.get(pk=pk)
+    if member_id == "admin1234": 
+        if request.method == 'POST':
+            form = NoticeForm(request.POST)
+            if form.is_valid():
+                obj.subject = request.POST['subject']
+                obj.memo = request.POST['memo']
+                obj.save()
+                return redirect('board:notice_list')
+            else:
+                form = NoticeForm(instance = obj)    
+                message="한계초과"
+                return render(request, 'board/notice_update.html', {'form':form, 'obj':obj, 'message':message})
         else:
-            obj = Notice.objects.get(pk=pk)
-            form = NoticeForm(instance = obj)    
-            message="한계초과"
-            return render(request, 'board/notice_update.html', {'form':form, 'obj':obj, 'message':message})
+            form = NoticeForm(instance = obj)
+            create = Member.objects.get(nickname=obj.name)
+            return render(request, 'board/notice_update.html', {
+                'obj':obj,
+                'form':form,
+                'subject':obj.subject,
+                'memo':obj.memo,
+                'create':create,
+            })
+    # 관리자가 아닌경우    
     else:
-        obj = Notice.objects.get(pk=pk)
-        form = NoticeForm(instance = obj)
-        create = Member.objects.get(nickname=obj.name)
-        return render(request, 'board/notice_update.html', {
-            'obj':obj,
-            'form':form,
-            'subject':obj.subject,
-            'memo':obj.memo,
-            'create':create,
-        })
+        message="비관리자"
+        form = NoticeForm()
+        return render(request, 'board/notice_update.html', {'obj':obj, 'form':form, 'message':message})    
 
 
 # 공지사항 삭제페이지
 def notice_delete(request, pk):
-    obj = Notice.objects.get(pk=pk)
-    obj.delete()
-    return redirect('board:notice_list')
+    member_id = request.session.get('member_id')
+    if member_id == "admin1234":
+        obj = Notice.objects.get(pk=pk)
+        obj.delete()
+        return redirect('board:notice_list')
+    else:
+        return redirect('board:notice_list')   
 
 
 # 공지사항 검색페이지
@@ -275,66 +284,74 @@ def from_mark_detail(request, pk):
 
 # FROM_MARK 작성페이지
 def from_mark_create(request):
-    if request.method == 'POST':
-        form = From_markForm(request.POST)
-        if form.is_valid():
-            # 로그인한경우
-            member_id = request.session.get('member_id')
-            obj = Member.objects.get(member_id=member_id)
-            name = obj.nickname
+    # 관리자인 경우
+    member_id = request.session.get('member_id')
+    if member_id == "admin1234":
+        if request.method == 'POST':
+            form = From_markForm(request.POST)
+            if form.is_valid():
+                obj = Member.objects.get(member_id=member_id)
+                name = obj.nickname
 
-            # Board Model에 제목, 작성자, 내용을 등록시킨다.
-            obj = From_mark(subject=request.POST['subject'], name=name, memo=request.POST['memo'])
-            obj.save()
-            return redirect('board:from_mark_list')
-        else:    
-            message="한계초과"
-            form = From_markForm()
-            return render(request, 'board/from_mark_create.html', {'form':form, 'message':message})
-    else:
-        if request.session.get('member_id'):
+                # Board Model에 제목, 작성자, 내용을 등록시킨다.
+                obj = From_mark(subject=request.POST['subject'], name=name, memo=request.POST['memo'])
+                obj.save()
+                return redirect('board:from_mark_list')
+            else:    
+                message="한계초과"
+                form = From_markForm()
+                return render(request, 'board/from_mark_create.html', {'form':form, 'message':message})
+        else:
             form = From_markForm()
             return render(request, 'board/from_mark_create.html', {'form':form})
-        # 로그인안한경우    
-        else:
-            message="비로그인"
-            form = From_markForm()
-            return render(request, 'board/from_mark_create.html', {'form':form, 'message':message})
+        # 관리자가 아닌경우   
+    else:
+        message="비관리자"
+        form = From_markForm()
+        return render(request, 'board/from_mark_create.html', {'form':form, 'message':message})
 
 # FROM_MARK 수정페이지
 def from_mark_update(request, pk):
-    if request.method == 'POST':
-        form = From_markForm(request.POST)
-        if form.is_valid():
-            obj = From_mark.objects.get(pk=pk)
-            obj.subject = request.POST['subject']
-            obj.memo = request.POST['memo']
-            obj.save()
-            return redirect('board:from_mark_list')
-
+    # 관리자인 경우
+    member_id = request.session.get('member_id')
+    obj = From_mark.objects.get(pk=pk)
+    if member_id == "admin1234": 
+        if request.method == 'POST':
+            form = From_markForm(request.POST)
+            if form.is_valid():
+                obj.subject = request.POST['subject']
+                obj.memo = request.POST['memo']
+                obj.save()
+                return redirect('board:from_mark_list')
+            else:
+                form = From_markForm(instance = obj)    
+                message="한계초과"
+                return render(request, 'board/from_mark_update.html', {'form':form, 'obj':obj, 'message':message})
         else:
-            obj = From_mark.objects.get(pk=pk)
-            form = From_markForm(instance = obj)    
-            message="한계초과"
-            return render(request, 'board/from_mark_update.html', {'form':form, 'obj':obj, 'message':message})
+            form = From_markForm(instance = obj)
+            create = Member.objects.get(nickname=obj.name)
+            return render(request, 'board/from_mark_update.html', {
+                'obj':obj,
+                'form':form,
+                'subject':obj.subject,
+                'memo':obj.memo,
+                'create':create,
+            })
+    # 관리자가 아닌경우    
     else:
-        obj = From_mark.objects.get(pk=pk)
-        form = From_markForm(instance = obj)
-        create = Member.objects.get(nickname=obj.name)
-        return render(request, 'board/from_mark_update.html', {
-            'obj':obj,
-            'form':form,
-            'subject':obj.subject,
-            'memo':obj.memo,
-            'create':create,
-        })
-
-
+        message="비관리자"
+        form = From_markForm()
+        return render(request, 'board/from_mark_update.html', {'obj':obj, 'form':form, 'message':message})
+            
 # FROM_MARK 삭제페이지
 def from_mark_delete(request, pk):
-    obj = From_mark.objects.get(pk=pk)
-    obj.delete()
-    return redirect('board:from_mark_list')
+    member_id = request.session.get('member_id')
+    if member_id == "admin1234":
+        obj = From_mark.objects.get(pk=pk)
+        obj.delete()
+        return redirect('board:from_mark_list')
+    else:
+        return redirect('board:from_mark_list')    
 
 
 # FROM_MARK 검색페이지
@@ -398,15 +415,6 @@ def from_mark_search(request):
         message = "새로고침"
         return render(request, 'board/from_mark_search.html', {'message':message})
 
-# FROM_MARK 댓글 삭제
-def from_mark_comment_delete(request, pk, cpk):
-    comment = From_mark_Comment.objects.get(pk=cpk)
-
-    if not comment.author.member_id == request.session.get('member_id'):
-        return redirect('board:from_mark_detail', pk)
-    else:
-        comment.delete()
-        return redirect('board:from_mark_detail', pk)
 
 
 # TO_MARK 목록
@@ -581,38 +589,48 @@ def to_mark_create(request):
 
 # TO_MARK 수정페이지
 def to_mark_update(request, pk):
-    if request.method == 'POST':
-        form = To_markForm(request.POST)
-        if form.is_valid():
-            obj = To_mark.objects.get(pk=pk)
-            obj.subject = request.POST['subject']
-            obj.memo = request.POST['memo']
-            obj.save()
-            return redirect('board:to_mark_list')
-
+    # 작성자나 관리자인 경우
+    member_id = request.session.get('member_id')
+    obj = To_mark.objects.get(pk=pk)
+    create = Member.objects.get(nickname=obj.name)
+    if member_id == create.member_id or member_id == "admin1234":
+        if request.method == 'POST':
+            form = To_markForm(request.POST)
+            if form.is_valid():
+                obj.subject = request.POST['subject']
+                obj.memo = request.POST['memo']
+                obj.save()
+                return redirect('board:to_mark_list')
+            else:
+                form = To_markForm(instance = obj)    
+                message="한계초과"
+                return render(request, 'board/to_mark_update.html', {'form':form, 'obj':obj, 'message':message})
         else:
-            obj = To_mark.objects.get(pk=pk)
-            form = To_markForm(instance = obj)    
-            message="한계초과"
-            return render(request, 'board/to_mark_update.html', {'form':form, 'obj':obj, 'message':message})
+            form = To_markForm(instance = obj)
+            return render(request, 'board/to_mark_update.html', {
+                'obj':obj,
+                'form':form,
+                'subject':obj.subject,
+                'memo':obj.memo,
+                'create':create,
+            })
+    # 작성자나 관리자가 아닌경우
     else:
-        obj = To_mark.objects.get(pk=pk)
-        form = To_markForm(instance = obj)
-        create = Member.objects.get(nickname=obj.name)
-        return render(request, 'board/to_mark_update.html', {
-            'obj':obj,
-            'form':form,
-            'subject':obj.subject,
-            'memo':obj.memo,
-            'create':create,
-        })
+        message="출입금지"
+        form = To_markForm()
+        return render(request, 'board/to_mark_update.html', {'obj':obj, 'form':form, 'message':message})        
 
 
 # TO_MARK 삭제페이지
 def to_mark_delete(request, pk):
+    member_id = request.session.get('member_id')
     obj = To_mark.objects.get(pk=pk)
-    obj.delete()
-    return redirect('board:to_mark_list')
+    create = Member.objects.get(nickname=obj.name)
+    if member_id == create.member_id or member_id == "admin1234":
+        obj.delete()
+        return redirect('board:to_mark_list')
+    else:
+        return redirect('board:to_mark_list')   
 
 
 # TO_MARK 검색페이지
@@ -680,10 +698,10 @@ def to_mark_search(request):
 def to_mark_comment_delete(request, pk, cpk):
     comment = To_mark_Comment.objects.get(pk=cpk)
 
-    if not comment.author.member_id == request.session.get('member_id'):
+    if request.session.get('member_id') == comment.author.member_id  or request.session.get('member_id') == "admin1234":
+        comment.delete()
         return redirect('board:to_mark_detail', pk)
     else:
-        comment.delete()
         return redirect('board:to_mark_detail', pk)
 
 
@@ -862,38 +880,51 @@ def freetalk_create(request):
 
 # Freetalk 수정페이지
 def freetalk_update(request, pk):
-    if request.method == 'POST':
-        form = FreetalkForm(request.POST)
-        if form.is_valid():
-            obj = Freetalk.objects.get(pk=pk)
-            obj.subject = request.POST['subject']
-            obj.memo = request.POST['memo']
-            obj.save()
-            return redirect('board:freetalk_list')
-
+     # 작성자나 관리자인 경우
+    member_id = request.session.get('member_id')
+    obj = Freetalk.objects.get(pk=pk)
+    create = Member.objects.get(nickname=obj.name)
+    if member_id == create.member_id or member_id == "admin1234":
+        if request.method == 'POST':
+            form = FreetalkForm(request.POST)
+            if form.is_valid():
+                obj.subject = request.POST['subject']
+                obj.memo = request.POST['memo']
+                obj.save()
+                return redirect('board:freetalk_list')
+            else:
+                form = FreetalkForm(instance = obj)    
+                message="한계초과"
+                return render(request, 'board/freetalk_update.html', {'form':form, 'obj':obj, 'message':message})
         else:
-            obj = Freetalk.objects.get(pk=pk)
-            form = FreetalkForm(instance = obj)    
-            message="한계초과"
-            return render(request, 'board/freetalk_update.html', {'form':form, 'obj':obj, 'message':message})
+            form = FreetalkForm(instance = obj)
+            return render(request, 'board/freetalk_update.html', {
+                'obj':obj,
+                'form':form,
+                'subject':obj.subject,
+                'memo':obj.memo,
+                'create':create,
+            })
+    # 작성자나 관리자가 아닌경우
     else:
-        obj = Freetalk.objects.get(pk=pk)
-        form = FreetalkForm(instance = obj)
-        create = Member.objects.get(nickname=obj.name)
-        return render(request, 'board/freetalk_update.html', {
-            'obj':obj,
-            'form':form,
-            'subject':obj.subject,
-            'memo':obj.memo,
-            'create':create,
-        })
+        message="출입금지"
+        form = FreetalkForm()
+        return render(request, 'board/freetalk_update.html', {'obj':obj, 'form':form, 'message':message})        
+
+
+
 
 
 # Freetalk 삭제페이지
 def freetalk_delete(request, pk):
+    member_id = request.session.get('member_id')
     obj = Freetalk.objects.get(pk=pk)
-    obj.delete()
-    return redirect('board:freetalk_list')
+    create = Member.objects.get(nickname=obj.name)
+    if member_id == create.member_id or member_id == "admin1234":
+        obj.delete()
+        return redirect('board:freetalk_list')
+    else:
+        return redirect('board:freetalk_list')    
 
 
 # Freetalk 검색페이지
@@ -961,10 +992,10 @@ def freetalk_search(request):
 def freetalk_comment_delete(request, pk, cpk):
     comment = Freetalk_Comment.objects.get(pk=cpk)
 
-    if not comment.author.member_id == request.session.get('member_id'):
+    if request.session.get('member_id') == comment.author.member_id  or request.session.get('member_id') == "admin1234":
+        comment.delete()
         return redirect('board:freetalk_detail', pk)
     else:
-        comment.delete()
         return redirect('board:freetalk_detail', pk)
 
 
@@ -1140,38 +1171,48 @@ def auth_create(request):
 
 # AUTH 수정페이지
 def auth_update(request, pk):
-    if request.method == 'POST':
-        form = AuthForm(request.POST)
-        if form.is_valid():
-            obj = Auth.objects.get(pk=pk)
-            obj.subject = request.POST['subject']
-            obj.memo = request.POST['memo']
-            obj.save()
-            return redirect('board:auth_list')
-
+    # 작성자나 관리자인 경우
+    member_id = request.session.get('member_id')
+    obj = Auth.objects.get(pk=pk)
+    create = Member.objects.get(nickname=obj.name)
+    if member_id == create.member_id or member_id == "admin1234":
+        if request.method == 'POST':
+            form = AuthForm(request.POST)
+            if form.is_valid():
+                obj.subject = request.POST['subject']
+                obj.memo = request.POST['memo']
+                obj.save()
+                return redirect('board:auth_list')
+            else:
+                form = AuthForm(instance = obj)    
+                message="한계초과"
+                return render(request, 'board/auth_update.html', {'form':form, 'obj':obj, 'message':message})
         else:
-            obj = Auth.objects.get(pk=pk)
-            form = AuthForm(instance = obj)    
-            message="한계초과"
-            return render(request, 'board/auth_update.html', {'form':form, 'obj':obj, 'message':message})
+            form = AuthForm(instance = obj)      
+            return render(request, 'board/auth_update.html', {
+                'obj':obj,
+                'form':form,
+                'subject':obj.subject,
+                'memo':obj.memo,
+                'create':create,
+            })
+    # 작성자나 관리자가 아닌경우
     else:
-        obj = Auth.objects.get(pk=pk)
-        form = AuthForm(instance = obj)
-        create = Member.objects.get(nickname=obj.name)
-        return render(request, 'board/auth_update.html', {
-            'obj':obj,
-            'form':form,
-            'subject':obj.subject,
-            'memo':obj.memo,
-            'create':create,
-        })
+        message="출입금지"
+        form = AuthForm()
+        return render(request, 'board/auth_update.html', {'obj':obj, 'form':form, 'message':message})
 
 
 # AUTH 삭제페이지
 def auth_delete(request, pk):
+    member_id = request.session.get('member_id')
     obj = Auth.objects.get(pk=pk)
-    obj.delete()
-    return redirect('board:auth_list')
+    create = Member.objects.get(nickname=obj.name)
+    if member_id == create.member_id or member_id == "admin1234":
+        obj.delete()
+        return redirect('board:auth_list')
+    else:
+        return redirect('board:auth_list')
 
 
 # AUTH 검색페이지
@@ -1239,10 +1280,10 @@ def auth_search(request):
 def auth_comment_delete(request, pk, cpk):
     comment = Auth_Comment.objects.get(pk=cpk)
 
-    if not comment.author.member_id == request.session.get('member_id'):
+    if request.session.get('member_id') == comment.author.member_id  or request.session.get('member_id') == "admin1234":
+        comment.delete()
         return redirect('board:auth_detail', pk)
     else:
-        comment.delete()
         return redirect('board:auth_detail', pk)
 
 
@@ -1417,38 +1458,48 @@ def question_create(request):
 
 # QUESTION 수정페이지
 def question_update(request, pk):
-    if request.method == 'POST':
-        form = QuestionForm(request.POST)
-        if form.is_valid():
-            obj = Question.objects.get(pk=pk)
-            obj.subject = request.POST['subject']
-            obj.memo = request.POST['memo']
-            obj.save()
-            return redirect('board:question_list')
-
+    # 작성자나 관리자인 경우
+    member_id = request.session.get('member_id')
+    obj = Question.objects.get(pk=pk)
+    create = Member.objects.get(nickname=obj.name)
+    if member_id == create.member_id or member_id == "admin1234":
+        if request.method == 'POST':
+            form = QuestionForm(request.POST)
+            if form.is_valid():
+                obj.subject = request.POST['subject']
+                obj.memo = request.POST['memo']
+                obj.save()
+                return redirect('board:question_list')
+            else:
+                form = QuestionForm(instance = obj)    
+                message="한계초과"
+                return render(request, 'board/question_update.html', {'form':form, 'obj':obj, 'message':message})
         else:
-            obj = Question.objects.get(pk=pk)
-            form = QuestionForm(instance = obj)    
-            message="한계초과"
-            return render(request, 'board/question_update.html', {'form':form, 'obj':obj, 'message':message})
+            form = QuestionForm(instance = obj)
+            return render(request, 'board/question_update.html', {
+                'obj':obj,
+                'form':form,
+                'subject':obj.subject,
+                'memo':obj.memo,
+                'create':create,
+            })
+    # 작성자나 관리자가 아닌경우
     else:
-        obj = Question.objects.get(pk=pk)
-        form = QuestionForm(instance = obj)
-        create = Member.objects.get(nickname=obj.name)
-        return render(request, 'board/question_update.html', {
-            'obj':obj,
-            'form':form,
-            'subject':obj.subject,
-            'memo':obj.memo,
-            'create':create,
-        })
+        message="출입금지"
+        form = QuestionForm()
+        return render(request, 'board/question_update.html', {'obj':obj, 'form':form, 'message':message})        
 
 
 # QUESTION 삭제페이지
 def question_delete(request, pk):
+    member_id = request.session.get('member_id')
     obj = Question.objects.get(pk=pk)
-    obj.delete()
-    return redirect('board:question_list')
+    create = Member.objects.get(nickname=obj.name)
+    if member_id == create.member_id or member_id == "admin1234":
+        obj.delete()
+        return redirect('board:question_list')
+    else:
+        return redirect('board:question_list')   
 
 
 # QUESTION 검색페이지
@@ -1516,10 +1567,10 @@ def question_search(request):
 def question_comment_delete(request, pk, cpk):
     comment = Question_Comment.objects.get(pk=cpk)
 
-    if not comment.author.member_id == request.session.get('member_id'):
+    if request.session.get('member_id') == comment.author.member_id  or request.session.get('member_id') == "admin1234":
+        comment.delete()
         return redirect('board:question_detail', pk)
     else:
-        comment.delete()
         return redirect('board:question_detail', pk)                                            
 
 
@@ -1620,44 +1671,50 @@ def inquiry(request):
 
 # 문의하기 삭제
 def inquiry_delete(request, pk):
-    inquiry = Inquiry.objects.get(pk=pk)
+    member_id = request.session.get('member_id')
+    obj = Inquiry.objects.get(pk=pk)
 
-    if not inquiry.author.member_id == request.session.get('member_id'):
+    if member_id == obj.author.member_id or member_id == "admin1234":
+        obj.delete()
         return redirect('board:inquiry')
     else:
-        inquiry.delete()
         return redirect('board:inquiry')   
 
 
 # 문의하기 댓글
 def inquiry_comment(request, pk):
-    obj = Inquiry.objects.get(pk=pk) 
-    if request.method == 'POST':
-        form = Inquiry_CommentForm(request.POST)
-
-        if form.is_valid():
-            # 문의 댓글등록하기 누른 후 
-            # 로그인한 아이디 정보가져오기
-            member_id = request.session.get('member_id')
-            login = Member.objects.get(member_id=member_id)
-            inquiry_comment = form.save(commit=False)
-            inquiry_comment.author = login
-            inquiry_comment.post = obj
-            inquiry_comment.text = form.cleaned_data['text']
-            inquiry_comment.save()
+    #작성자나 관리자인 경우
+    member_id = request.session.get('member_id')
+    obj = Inquiry.objects.get(pk=pk)
+    if member_id == obj.author.member_id or member_id == "admin1234": 
+        if request.method == 'POST':
+            form = Inquiry_CommentForm(request.POST)
+            if form.is_valid():
+                # 문의 댓글등록하기 누른 후 
+                # 로그인한 아이디 정보가져오기
+                member_id = request.session.get('member_id')
+                login = Member.objects.get(member_id=member_id)
+                inquiry_comment = form.save(commit=False)
+                inquiry_comment.author = login
+                inquiry_comment.post = obj
+                inquiry_comment.text = form.cleaned_data['text']
+                inquiry_comment.save()
+                return redirect('board:inquiry')
+        else:
             return redirect('board:inquiry')
     else:
-        return redirect('board:inquiry') 
+        return redirect('board:inquiry')
 
 
 # 문의댓글 삭제
 def inquiry_comment_delete(request, pk):
-    inquiry_comment = Inquiry_Comment.objects.get(pk=pk)
+    member_id = request.session.get('member_id')
+    obj = Inquiry_Comment.objects.get(pk=pk)
 
-    if not inquiry_comment.author.member_id == request.session.get('member_id'):
+    if member_id == obj.author.member_id or member_id == "admin1234": 
+        obj.delete()
         return redirect('board:inquiry')
     else:
-        inquiry_comment.delete()
         return redirect('board:inquiry')   
 
 
@@ -1755,42 +1812,47 @@ def report(request):
 
 # 신고하기 삭제
 def report_delete(request, pk):
-    report = Report.objects.get(pk=pk)
+    member_id = request.session.get('member_id')
+    obj = Report.objects.get(pk=pk)
 
-    if not report.author.member_id == request.session.get('member_id'):
+    if member_id == obj.author.member_id or member_id == "admin1234":
+        obj.delete()
         return redirect('board:report')
     else:
-        report.delete()
         return redirect('board:report')   
 
 
 # 신고하기 댓글
 def report_comment(request, pk):
-    obj = Report.objects.get(pk=pk) 
-    if request.method == 'POST':
-        form = Report_CommentForm(request.POST)
-
-        if form.is_valid():
-            # 신고 댓글등록하기 누른 후 
-            # 로그인한 아이디 정보가져오기
-            member_id = request.session.get('member_id')
-            login = Member.objects.get(member_id=member_id)
-            report_comment = form.save(commit=False)
-            report_comment.author = login
-            report_comment.post = obj
-            report_comment.text = form.cleaned_data['text']
-            report_comment.save()
-            return redirect('board:report')
+    #작성자나 관리자인 경우
+    member_id = request.session.get('member_id')
+    obj = Report.objects.get(pk=pk)
+    if member_id == obj.author.member_id or member_id == "admin1234":  
+        if request.method == 'POST':
+            form = Report_CommentForm(request.POST)
+            if form.is_valid():
+                # 신고 댓글등록하기 누른 후 
+                # 로그인한 아이디 정보가져오기
+                member_id = request.session.get('member_id')
+                login = Member.objects.get(member_id=member_id)
+                report_comment = form.save(commit=False)
+                report_comment.author = login
+                report_comment.post = obj
+                report_comment.text = form.cleaned_data['text']
+                report_comment.save()
+                return redirect('board:report')
+        else:
+            return redirect('board:report') 
     else:
         return redirect('board:report') 
 
-
 # 신고댓글 삭제
 def report_comment_delete(request, pk):
-    report_comment = Report_Comment.objects.get(pk=pk)
+    member_id = request.session.get('member_id')
+    obj = Report_Comment.objects.get(pk=pk)
 
-    if not report_comment.author.member_id == request.session.get('member_id'):
+    if member_id == obj.author.member_id or member_id == "admin1234":
+        obj.delete() 
         return redirect('board:report')
     else:
-        report_comment.delete()
         return redirect('board:report')           

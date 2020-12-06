@@ -89,7 +89,7 @@ label {
 
 /* 삭제여부 팝업창*/
 function delete_popup(){
-    if("{{ request.session.member_id }}" == "{{ create.member_id }}"){
+    if("{{ request.session.member_id }}" == "{{ create.member_id }}" || "{{ request.session.member_id }}" == "admin1234"){
         var result = confirm("정말 삭제하시겠습니까?");
         if(result)
         {
@@ -104,6 +104,10 @@ function delete_popup(){
 var message = "{{ message }}";
 if (message=="한계초과"){
     alert("게시글 내용을 초과하였습니다");
+    window.location.href = "{% url 'board:freetalk_list' %}";
+}
+if (message=="출입금지"){
+    alert("작성자나 관리자가 아닙니다");
     window.location.href = "{% url 'board:freetalk_list' %}";
 }
 </script>

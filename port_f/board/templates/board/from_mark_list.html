@@ -178,5 +178,19 @@ h3 {
     </tr>
 </table>
 </div>
+
+<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>  
+
+<script>
+/* 관리자인경우에만 글쓰기 버튼 보이기 */
+if("{{ request.session.member_id }}" == "admin1234"){
+    $(".findType_2").show();
+}
+else {
+    $(".findType_2").hide();    
+}
+</script>
+
 {% endblock conbody %}
 {% endblock boardbar %}
