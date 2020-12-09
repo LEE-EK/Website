@@ -34,7 +34,7 @@ h3 {
     line-height: 24px;
 }
 .tbl_common .cont {
-    padding-left: 50px;
+    padding-left: 30px;
 }
 
 /* 페이징 */
@@ -94,15 +94,13 @@ h3 {
 <!-- 테이블 -->
 <table cellspacing=1 width=700 class="tbl_common">
     <tr>
-    <td width=50><p align=center>No</p>
-    </td>
-    <td width=320 class="left"><p align=center>제목</p>
+    <td width=340 class="left"><p align=center>제목</p>
     </td>
     <td width=100><p align=center>작성자</p>
     </td>
     <td width=120><p align=center>등록일</p>
     </td>
-    <td width=100><p align=center>조회수</p>
+    <td width=60><p align=center>조회수</p>
     </td>
     </tr>
 
@@ -110,15 +108,14 @@ h3 {
     <ul>
     {% for boardRow in  restaurants %}
     <tr>
-    <td width=50><p align=center>{{ boardRow.id }}</p></tboardListd>
-    <td width=320 class="cont">
+    <td width=340 class="cont">
     <p align=left>
     <a href="{% url 'board:question_detail' boardRow.id %}" >{{ boardRow.subject }}
     </p>
     </td>
     <td width=100><p align=center>{{ boardRow.name }}</p></td>
     <td width=120><p align=center>{{ boardRow.create_date }}</p></td>
-    <td width=100><p align=center>{{ boardRow.hits }}</p></td>
+    <td width=60><p align=center>{{ boardRow.hits }}</p></td>
     </tr>
     {% endfor %}
     </ul>

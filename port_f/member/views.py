@@ -38,11 +38,9 @@ def loginform(request):
         if form.is_valid():
            member_id = request.POST['member_id']
            member_pw = request.POST['member_pw']
-           save_session(request, member_id)
 
            if Member.objects.filter(member_id = member_id, member_pw = member_pw):
                # 세션으로 로그인 정보 저장시키기
-               # obj = Member.objects.get(member_id = member_id)
                save_session(request, member_id)
                return redirect('index')
 

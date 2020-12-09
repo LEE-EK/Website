@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-{% block sidebar %}
+
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/board.css' %}">
 <!-- 커뮤니티 메인홈 -->
@@ -10,6 +10,7 @@
 <div class="container_img"></div>
 <br>
 <div clsas="container_board">
+    {% block sidebar %}
     <!-- 사이드바 -->
     <div class="side_bar">
         <div class="fanpage_side">
@@ -32,15 +33,15 @@
         </ul>
         </div>
     </div>
+    {% endblock sidebar%}
     <!-- 게시공간 -->
     <div class="board_bar">
-        {% block boardbar %}
-        {% endblock boardbar %}
+    {% block boardbar %}
+    {% endblock boardbar %}
     </div> 
 </div>
 
 </div>
 <br>
-{% endblock sidebar%}
 {% endblock content %}
 

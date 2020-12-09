@@ -10,7 +10,7 @@
 .side_bar {
     width: 180px;
     height: 900px;
-    float: left;            
+    float: left;          
 }
 .board_bar {
     width: 950px;
@@ -52,7 +52,4 @@ li {
     font-size: 14px;
 }
 
-footer {
-    position: relative;
-    bottom:0
-}
+

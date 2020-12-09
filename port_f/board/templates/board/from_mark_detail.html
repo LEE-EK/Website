@@ -153,7 +153,7 @@ table {
 
 /* 로그인한 유저가 작성한 글인지 확인 */
 /* 일치시 수정삭제 보이기 */
-if("{{ request.session.member_id }}" == "{{ create.member_id }}"){
+if("{{ request.session.member_id }}" == "{{ create.member_id }}" || "{{ request.session.member_id }}" == "admin1234" ){
     $("#control").show();
 }
 else {
@@ -163,7 +163,7 @@ else {
 
 /* 게시글 삭제여부 팝업창 */
 function delete_popup(){
-    if("{{ request.session.member_id }}" == "{{ create.member_id }}"){
+    if("{{ request.session.member_id }}" == "{{ create.member_id }}" || "{{ request.session.member_id }}" == "admin1234" ){
         var result = confirm("정말 삭제하시겠습니까?");
         if(result)
         {

@@ -284,9 +284,9 @@ def from_mark_detail(request, pk):
 
 # FROM_MARK 작성페이지
 def from_mark_create(request):
-    # 관리자인 경우
+    # 관리자와 마크인 경우
     member_id = request.session.get('member_id')
-    if member_id == "admin1234":
+    if member_id == "admin1234" or member_id == "mark1234":
         if request.method == 'POST':
             form = From_markForm(request.POST)
             if form.is_valid():
@@ -304,7 +304,7 @@ def from_mark_create(request):
         else:
             form = From_markForm()
             return render(request, 'board/from_mark_create.html', {'form':form})
-        # 관리자가 아닌경우   
+        # 관리자나 마크가 아닌경우   
     else:
         message="비관리자"
         form = From_markForm()
@@ -312,10 +312,10 @@ def from_mark_create(request):
 
 # FROM_MARK 수정페이지
 def from_mark_update(request, pk):
-    # 관리자인 경우
+    # 관리자나 마크인 경우
     member_id = request.session.get('member_id')
     obj = From_mark.objects.get(pk=pk)
-    if member_id == "admin1234": 
+    if member_id == "admin1234" or member_id == "mark1234": 
         if request.method == 'POST':
             form = From_markForm(request.POST)
             if form.is_valid():
@@ -337,7 +337,7 @@ def from_mark_update(request, pk):
                 'memo':obj.memo,
                 'create':create,
             })
-    # 관리자가 아닌경우    
+    # 관리자나 마크가 아닌경우    
     else:
         message="비관리자"
         form = From_markForm()
@@ -346,7 +346,7 @@ def from_mark_update(request, pk):
 # FROM_MARK 삭제페이지
 def from_mark_delete(request, pk):
     member_id = request.session.get('member_id')
-    if member_id == "admin1234":
+    if member_id == "admin1234" or member_id == "mark1234":
         obj = From_mark.objects.get(pk=pk)
         obj.delete()
         return redirect('board:from_mark_list')
