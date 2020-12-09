@@ -310,7 +310,7 @@ def from_mark_create(request):
         form = From_markForm()
         return render(request, 'board/from_mark_create.html', {'form':form, 'message':message})
 
-# FROM_MARK 수정페이지
+# FROM_MARK 수정페이지llectstatice
 def from_mark_update(request, pk):
     # 관리자나 마크인 경우
     member_id = request.session.get('member_id')
