@@ -15,8 +15,19 @@ import math
 ####################################################################################################### MAIN
 
 # 커뮤니티 메인화면
-class IndexView(TemplateView):
-    template_name = 'board/board_index.html'
+def index(request):
+    # 공지사항, FROM_MARK, 자유게시판, 질문답변
+    notice = Notice.objects.order_by('-id')[:4]
+    from_mark = From_mark.objects.order_by('-id')[:4]
+    freetalk = Freetalk.objects.order_by('-id')[:4]
+    question = Question.objects.order_by('-id')[:4]
+    context = {
+        'notice': notice,
+        'from_mark': from_mark,
+        'freetalk': freetalk,
+        'question': question,
+    }
+    return render(request, 'board/board_index.html', context)
 
 ####################################################################################################### NOTICE
 

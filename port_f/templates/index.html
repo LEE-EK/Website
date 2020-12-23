@@ -4,107 +4,32 @@
 {% load static %}
         <!-- 내부 스타일시트 -->
         <style type="text/css">
-        .jumbotron {
-            background-image: url("{% static 'images/leemark.jpg' %}");
-            background-size: cover;
-            color: white;
-            font-weight: bolder;
+        body {
+            background-color:black; 
         }
+        .container {
+            margin-top: -30px;
+        }
+        .jumbotron {
+            background-image: url("{% static 'images/mark_purple.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            height: 870px;
+        }
+
         </style>
         <!-- 점보트론 -->
         <div class="container">
+            <br><br>
+            <div class="jumbotron"></div>
 
-            <div class="jumbotron"> 
-                <h1 class="text-center" style="color:red;">My First And Last</h1>
-                <h1 class="text-center">MARK 1st Single Alubm</h1>
-                <p class="text-center">2019.11.22(Fri) 발매</p>
-                <p class="text-center"><a class="btn btn-primary btn-lg" href="lecture.html" role="button">구매하기</a></p>
-            </div>
-
+            <br>
+            <!--
             <div clsas="row">
                 <div class="embed-responsive embed-responsive-16by9">
                     <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/q6-w3iDS6U4?autoplay=1&amp;mute=1"></iframe>
                 </div>
             </div>
-            <hr>
-
-            <div class="row">
-                <div class="col-md-4">
-                    <h4>NCT U</h4>
-                    <p>코딩 부스터는 어쩌구 저쩌구입니다. 사실 잘모르겠어요. 자고싶어요</p>
-                    <a class="btn btn-default" data-target="#modal" data-toggle="modal">자세히 알아보기</a>
-                </div>
-                <div class="col-md-4">
-                    <h4>NCT DREAM</h4>
-                    <p>코딩 부스터는 어쩌구 저쩌구입니다. 사실 잘모르겠어요. 자고싶어요</p>
-                    <a class="btn btn-default" href="#">자세히 알아보기</a>
-                </div>
-                <div class="col-md-4">
-                    <h4>NCT 127</h4>0
-                    <p>코딩 부스터는 어쩌구 저쩌구입니다. 사실 잘모르겠어요. 자고싶어요</p>
-                    <a class="btn btn-default" href="#">자세히 알아보기</a>
-                </div>
-            </div>
-
-            <hr>
-
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title"><span class="glyphicon glyphicon-pencil"></span>
-                    &nbsp;&nbsp;최신 강의 목록</h3>
-                </div>
-                <div class="panel-body">
-                    <div class="media">
-                        <div class="media-left">
-                            <a href="#"><img class="media-object" src="{% static 'images/nctu.jpg' %}" alt="NCTU"></a>
-                        </div>
-                        <div class="media-body">
-                            <h4 class="media-heading"><a href="lecture.html?lectureName=C">NCT U</a>&nbsp;<sapn class="badge">New</sapn></h4>
-                            NCT 멤버들중에서 곡이나 컨셉에 따라 멤버의 수가 변동되어 활동하는 그룹입니다.
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="media">
-                        <div class="media-left">
-                            <a href="#"><img class="media-object" src="{% static 'images/nctdream.jpg' %}" alt="NCTDREAM"></a>
-                        </div>
-                        <div class="media-body">
-                            <h4 class="media-heading"><a href="lecture.html?lectureName=Java">NCT DREAM</a>&nbsp;<sapn class="badge">New</sapn></h4>
-                            청소년으로 구성된 청소년연합팀입니다. 마크가 졸업한 시점에서 지금은 총 6명입니다
-                            만20세이상이되면 졸업하는 시스템입니다.
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="media">
-                        <div class="media-left">
-                            <a href="#"><img class="media-object" src="{% static 'images/nct127.jpg' %}" alt="NCT127"></a>
-                        </div>
-                        <div class="media-body">
-                            <h4 class="media-heading"><a href="lecture.html?lectureName=Android">NCT 127</a>&nbsp;<sapn class="badge">New</sapn></h4>
-                            원년 멤버이던 윈윈이 나간시점에서 총 9명으로 이루어진 서울을 기반으로한 팀입니다.
-                            현재 멤버인 정우가 몸상태로인해 휴식기 상태에서 8명으로 활동중에 있습니다.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="modal" id="modal" tabindex="-1">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            코딩 부스터의 특징
-                            <button class="close" data-dismiss="modal">&times;</button>
-                        </div>
-                        <div class="modal-body" style="text-align: center;">
-                            저희 이마크는 애옹이이면서 굉장히 귀엽습니다 <br>
-                            데뷔만 총 4번한 노력형입니다 이쁘게 봐주세요<br><br>
-                            <img src="{% static 'images/mark_1.jpg' %}" id="imagepreview" style="width: 256px; height: 256px;">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-                
+            -->
+                  
 {% endblock content %}

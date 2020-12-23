@@ -9,6 +9,17 @@
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}">   
 </head>
+
+<style type="text/css">
+/* 내비게이션 중앙정렬 */
+.navbar-default .navbar-header .navbar-brand {
+    margin-left: 10px;
+}
+.navbar-default .navbar-nav {
+    margin-left: 95px;
+}
+</style>
+
 <body style="overflow-x: hidden">
 
 <!-- 내비게이션바 -->
@@ -16,33 +27,18 @@
         <nav class="navbar navbar-default">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collpased" data-toggle="collapse" 
-                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                        <span class="sr-only"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
                     <a class="navbar-brand" href="{% url 'index' %}"><img src="{% static 'images/nct_logo2.png' %}" alt="NCT" width="110px" height="30px"></a>
                 </div>
                 <div class="collapsed navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
+                        <li><a href="{% url 'board:index' %}">FANCAFE</a></li>
                         <li><a href="{% url 'board:notice_list' %}">NOTICE</a></li>
                         <li><a href="{% url 'board:schedule' %}">SCHEDULE</a></li>
-                        <li><a href="{% url 'board:index' %}">FANCAFE</a></li>
                         <li><a href="{% url 'board:profile' %}">PROFILE</a></li>
                         <li><a href="{% url 'board:album' %}">ALBUM</a></li>
                         <li><a href="#">GALLERY</a></li>
                         <li><a href="#">VIDEO</a></li>
                     </ul>
-                    <!-- 검색창 오른쪽정렬
-                    <form class="navbar-form navbar-right">
-                        <div class="form-group">
-                            <input tye="text" class="form-control" placeholder="내용을 입력하세요">
-                        </div>
-                        <button type="submit" class="btn btn-default">검색</button>
-                    </form>
-                     -->
                     <!-- 로그인 아이콘 오른쪽 정렬-->
                     <ul class="nav navbar-nav navbar-right">
                         <li class="dropdown">
@@ -100,6 +96,13 @@ if (member_id){
     $('.list_1').attr('href',"{% url 'member:logout' %}");
     $('.list_2').text('회원정보수정');
     $('.list_2').attr('href',"#");
+}
+
+// 새로고침시 스크롤 위로
+window.onload = function() {
+	setTimeout (function () {
+		scrollTo(0,0);
+    },100);
 }
 
 </script>
