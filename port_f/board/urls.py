@@ -171,4 +171,11 @@ urlpatterns = [
     # /report_comment_delete - 신고댓글 삭제
     path('report/<int:pk>/comment_delete', views.report_comment_delete, name='report_comment_delete'),
    
+    ####################################################################################################### GALLERY & VIDEO
+
+    # /gallery - 갤러리
+    path('gallery/', views.gallery, name='gallery'),
+
+    # /video - 비디오
+    path('video/', views.video, name='video'),
 ]

@@ -17,6 +17,7 @@
 }
 .navbar-default .navbar-nav {
     margin-left: 95px;
+    font-weight: bold;
 }
 </style>
 
@@ -36,8 +37,8 @@
                         <li><a href="{% url 'board:schedule' %}">SCHEDULE</a></li>
                         <li><a href="{% url 'board:profile' %}">PROFILE</a></li>
                         <li><a href="{% url 'board:album' %}">ALBUM</a></li>
-                        <li><a href="#">GALLERY</a></li>
-                        <li><a href="#">VIDEO</a></li>
+                        <li><a href="{% url 'board:gallery' %}">GALLERY</a></li>
+                        <li><a href="{% url 'board:video' %}">VIDEO</a></li>
                     </ul>
                     <!-- 로그인 아이콘 오른쪽 정렬-->
                     <ul class="nav navbar-nav navbar-right">

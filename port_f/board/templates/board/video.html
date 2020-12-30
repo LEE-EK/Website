@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %} 비디오 | MARK {% endblock %}
+{% block content %}
+
+
+{% load static %}
+<!-- 내부 스타일시트 -->
+<style type="text/css">
+.container {
+    height: 1550px;
+}
+ol, ul {
+    list-style: none;
+}
+/* 비디오 상단 */
+.sv_wrap {
+    position: relative;
+    height: 590px;
+}
+/* 비디오 상단 이미지 */
+.sv {
+    background-image: url("{% static 'images/gallery.jpg' %}");
+    height: 450px;
+    width: 1600px;
+    background-size: auto 450px;
+    background-position: center;
+    position: relative;
+    left: -17%;
+    margin-top: -40px;
+}
+/* 비디오 하단 */
+.content {
+    position: relative;
+    background: #fff;
+    padding: 50px 65px 110px;
+    margin-top: -80px;
+    left: 50%;
+    margin-left: -650px;
+}
+.inner {
+    width: 1300px;
+    height: 1000px;
+}
+/* 비디오 타이틀 */
+.page_tit {
+    text-align: center;
+    font-size: 35px;
+    letter-spacing: 7px;
+    color: black;
+    font-weight: 300;
+    line-height: 1.2em;
+    margin-bottom: 45px;
+    font-family: 'Oswald', 'Nanum Square', sans-serif;
+}
+</style>    
+<!-- 컨테이너 중앙에 고정 -->
+<div class="container"> 
+    <!-- 상단 대문이미지 -->
+    <div class="container_img"></div><br>
+    <div clsas="container_board">
+        <div class="sv-wrap">
+            <div class="sv"></div>
+        </div>
+        <div class="content inner">
+            <!-- 비디오 타이틀 -->
+            <h2 class="page_tit">VIDEO</h2>
+            <div class="board-wrap">
+                <!-- 비디오 리스트 -->
+                비디오 리스트
+            </div>
+        </div>
+    </div>
+</div>    
+
+
+{% endblock content %}

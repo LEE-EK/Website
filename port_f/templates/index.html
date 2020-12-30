@@ -2,34 +2,39 @@
 {% block title %} 메인 | MARK {% endblock %}
 {% block content %}
 {% load static %}
-        <!-- 내부 스타일시트 -->
-        <style type="text/css">
-        body {
-            background-color:black; 
-        }
-        .container {
-            margin-top: -30px;
-        }
-        .jumbotron {
-            background-image: url("{% static 'images/mark_purple.jpg' %}");
-            background-size: cover;
-            background-position: center;
-            height: 870px;
-        }
+<!-- 내부 스타일시트 -->
+<style type="text/css">
+body {
+    background-color:white; 
+}
+.container {
+    margin-top: -45px;
+}
+.jumbotron {
+    background-image: url("{% static 'images/main.jpg' %}");
+    background-size: cover;
+    background-position: center;
+    height: 900px;
+    width: 1550px;
+    margin-left: -200px;
+}
+footer {
+    width: 1550px;
+    margin-top: -30px;
+    margin-left: -200px;
+}
 
-        </style>
-        <!-- 점보트론 -->
-        <div class="container">
-            <br><br>
-            <div class="jumbotron"></div>
-
-            <br>
-            <!--
-            <div clsas="row">
-                <div class="embed-responsive embed-responsive-16by9">
-                    <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/q6-w3iDS6U4?autoplay=1&amp;mute=1"></iframe>
-                </div>
-            </div>
-            -->
+</style>
+<!-- 점보트론 -->
+<div class="container">
+    <br><br>
+    <div class="jumbotron"></div>
+    <!--
+    <div clsas="row">
+        <div class="embed-responsive embed-responsive-16by9">
+            <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/q6-w3iDS6U4?autoplay=1&amp;mute=1"></iframe>
+        </div>
+    </div>
+    -->
                   
 {% endblock content %}

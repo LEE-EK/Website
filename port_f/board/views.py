@@ -1867,3 +1867,19 @@ def report_comment_delete(request, pk):
         return redirect('board:report')
     else:
         return redirect('board:report')           
+
+
+
+
+####################################################################################################### GALLERY & VIDEO
+
+# 갤러리
+def gallery(request):
+    return render(request, 'board/gallery.html')
+    #return redirect('board:gallery')
+
+# 비디오
+def video(request):
+    return render(request, 'board/video.html')
+    #return redirect('board:video')    
+
