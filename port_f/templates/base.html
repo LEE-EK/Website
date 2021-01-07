@@ -96,7 +96,7 @@ if (member_id){
     $('.list_1').text('로그아웃');
     $('.list_1').attr('href',"{% url 'member:logout' %}");
     $('.list_2').text('회원정보수정');
-    $('.list_2').attr('href',"#");
+    $('.list_2').attr('href',"{% url 'member:mypage' %}");
 }
 
 // 새로고침시 스크롤 위로

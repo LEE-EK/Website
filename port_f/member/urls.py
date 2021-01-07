@@ -8,6 +8,9 @@ urlpatterns = [
 
     # /privacy - 개인정보처리방침
     path('privacy/', views.Privacy.as_view(), name='privacy'),
+
+    # /mypage - 회원정보수정
+    path('mypage/', views.mypage, name='mypage'),
     
     # /login - 로그인 화면
     path('login/', views.loginform, name ='login'),

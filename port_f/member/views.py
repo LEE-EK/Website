@@ -22,13 +22,132 @@ class Agreement(TemplateView):
 class Privacy(TemplateView):
     template_name = 'member/privacy.html'
 
-# 회원가입완료화면
-class SiResultView(DetailView):
-    model = Member
-    template_name = 'member/signup_result.html'
-    context_object_name = "result"
+# 회원정보수정
+def mypage(request):
+    # 로그인한 회원 정보 가져오기
+    member_id = request.session.get('member_id')
+    if member_id:
+        obj = Member.objects.get(member_id = member_id)
+        if request.method == 'POST':
+            form = SignupForm(request.POST)
+            if form.is_valid():
+                # (1)비밀번호와 비밀번호확인이 일치하는지 비교한다
+                if request.POST['member_pw'] == request.POST['member_pw_r']:
+                    #(2)비밀번호 글자 제한(영문자, 숫자만 가능)
+                    pw_check=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a',\
+                    'b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1',\
+                    '2','3','4','5','6','7','8','9']
+                    pw_value=""
+                    # 비밀번호 검사
+                    for i in list(request.POST['member_pw']):
+                        if i in pw_check:
+                            pw_value+=i
+                        else:
+                            continue
 
-# 로그인 폼 처리
+                    if(request.POST['member_pw']!=pw_value):
+                        #영대소문자,숫자가 아니니 에러메시지를 띄운다.
+                        form = SignupForm()
+                        message="비밀번호글자제한"
+                        return render(request, 'member/mypage.html', {
+                            'form':form,
+                            'message':message,
+                            'member_id':request.POST['member_id'],
+                            'member_pw':request.POST['member_pw'],
+                            'member_pw_r':request.POST['member_pw_r'],
+                            'nickname':request.POST['nickname'],
+                            'member_name':request.POST['member_name'],
+                            'address':request.POST['address'],
+                            'address_in':request.POST['address_in'],
+                            'phone_no':request.POST['phone_no'],
+                            'email':request.POST['email'],
+                        })
+
+                    #(추가)닉네임중복인지 확인하기
+                    #DB에 이미 존재하는 닉네임이거나 지금나의 닉네임이 아닐경우
+                    if Member.objects.filter(nickname = request.POST['nickname']) and request.POST['nickname']!=obj.nickname:
+                        form = SignupForm()
+                        message="닉네임중복"
+                        return render(request, 'member/mypage.html', {
+                            'form':form,
+                            'message':message,
+                            'member_id':request.POST['member_id'],
+                            'member_pw':request.POST['member_pw'],
+                            'member_pw_r':request.POST['member_pw_r'],
+                            'nickname':request.POST['nickname'],
+                            'member_name':request.POST['member_name'],
+                            'address':request.POST['address'],
+                            'address_in':request.POST['address_in'],
+                            'phone_no':request.POST['phone_no'],
+                            'email':request.POST['email'],
+                        })
+
+                    # 모든 에러검사를 넘겨 회원정보 수정을 완료한다.
+                    #obj.member_id=request.session['member_id'],
+                    obj.member_pw=request.POST['member_pw']
+                    obj.nickname=request.POST['nickname']
+                    obj.member_name=request.POST['member_name']
+                    obj.address=request.POST['address']
+                    obj.address_in=request.POST['address_in']
+                    obj.phone_no=request.POST['phone_no']
+                    obj.email=request.POST['email']
+                    obj.save()              
+                    return render(request, 'member/mypage.html', {'form':form, 'message':"수정완료", 'obj':obj })
+                    
+                #(1)else문
+                # 비밀번호와 비밀번호확인 일치 실패시 '비밀번호' 문구를보낸다.
+                # 현재까지 입력된 form값을 모두 다같이 담아 보낸다.
+                # 받은 form값을 input.value로 넣어준다.
+                else:
+                    form = SignupForm()
+                    message="비밀번호일치"
+                    return render(request, 'member/mypage.html', {
+                        'form':form,
+                        'message':message,
+                        'member_id':request.POST['member_id'],
+                        'member_pw':request.POST['member_pw'],
+                        'member_pw_r':request.POST['member_pw_r'],
+                        'nickname':request.POST['nickname'],
+                        'member_name':request.POST['member_name'],
+                        'address':request.POST['address'],
+                        'address_in':request.POST['address_in'],
+                        'phone_no':request.POST['phone_no'],
+                        'email':request.POST['email'],
+                        })
+            # 잘못된 입력값
+            else:       
+                form = SignupForm()
+                message="잘못된입력값"
+                return render(request, 'member/mypage.html', {
+                    'form':form,
+                    'message':message,
+                    'member_id':request.POST['member_id'],
+                    'member_pw':request.POST['member_pw'],
+                    'member_pw_r':request.POST['member_pw_r'],
+                    'nickname':request.POST['nickname'],
+                    'member_name':request.POST['member_name'],
+                    'address':request.POST['address'],
+                    'address_in':request.POST['address_in'],
+                    'phone_no':request.POST['phone_no'],
+                    'email':request.POST['email'],
+                    })                
+        else:
+            form = SignupForm()
+            message="GET"
+            return render(request, 'member/mypage.html', {'form':form, 'message':message, 'obj':obj})
+
+    # 로그인한 정보가 없을시 메시지 띄우기 (자동 로그아웃될시)
+    else:
+        form = SignupForm()
+        message="실패"
+        return render(request, 'member/mypage.html', {'form':form, 'message':message})
+
+
+# 세션 정보
+def save_session(request, member_id):
+    request.session['member_id'] = member_id  
+
+# 로그인
 def loginform(request):
     # POST 방식이면, 데이터가 담긴 제출된 폼으로 간주합니다.
     if request.method == 'POST':
@@ -59,11 +178,7 @@ def logout(request):
         del request.session['member_id']
     except:
         pass
-    return redirect('index')
-
-# 세션 정보
-def save_session(request, member_id):
-    request.session['member_id'] = member_id       
+    return redirect('index')     
 
 # 회원가입 폼처리
 def signupform(request):
@@ -200,12 +315,33 @@ def signupform(request):
                     'phone_no':request.POST['phone_no'],
                     'email':request.POST['email'],
                     })
-                
-
+        # 잘못된 입력값
+        else:       
+            form = SignupForm()
+            message="잘못된입력값"
+            return render(request, 'member/signup.html', {
+                'form':form,
+                'message':message,
+                'member_id':request.POST['member_id'],
+                'member_pw':request.POST['member_pw'],
+                'member_pw_r':request.POST['member_pw_r'],
+                'nickname':request.POST['nickname'],
+                'member_name':request.POST['member_name'],
+                'address':request.POST['address'],
+                'address_in':request.POST['address_in'],
+                'phone_no':request.POST['phone_no'],
+                'email':request.POST['email'],
+                })
     else: # GET 방식
         form = SignupForm()
         message="GET"
         return render(request, 'member/signup.html', {'form':form, 'message':message})
+
+# 회원가입완료화면
+class SiResultView(DetailView):
+    model = Member
+    template_name = 'member/signup_result.html'
+    context_object_name = "result"
 
 # 아이디찾기
 def findidform(request):
