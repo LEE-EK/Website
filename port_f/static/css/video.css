@@ -11,7 +11,7 @@ ol, ul {
 }
 /* 비디오 상단 이미지 */
 .sv {
-    background-image: url("../../../static/images/gallery.jpg");
+    background-image: url("../../../static/images/gallery_3.jpg");
     height: 450px;
     width: 1600px;
     background-size: auto 450px;
@@ -25,7 +25,7 @@ ol, ul {
     position: relative;
     background: #fff;
     padding: 50px 65px 110px;
-    margin-top: -80px;
+    margin-top: -100px;
     left: 50%;
     margin-left: -650px;
 }
@@ -37,9 +37,9 @@ ol, ul {
 .page_tit {
     text-align: center;
     font-size: 35px;
-    letter-spacing: 7px;
-    color: black;
-    font-weight: 300;
+    letter-spacing: 2px;
+    color: #333;
+    font-weight: bold;
     line-height: 1.2em;
     margin-bottom: 45px;
     font-family: 'Oswald', 'Nanum Square', sans-serif;

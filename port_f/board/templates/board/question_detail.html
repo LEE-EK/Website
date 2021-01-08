@@ -4,11 +4,9 @@
 {% load static %}
 <!-- conbody 내부 스타일시트 -->
 <style type="text/css">
-
 .container {
     height: 4000px;
 }
-
 /* 테이블 상단*/
 table {
     margin-top: 30px;
@@ -157,7 +155,6 @@ table {
 }
 
 </style>
-
 <!-- 테이블 상단 -->
 <table cellpadding="0" cellspacing="0" border="0" class="tbl_common_view">
     <tbody>
@@ -272,15 +269,10 @@ table {
         </td>
         </tr>
     </table>
-
-
-
-
 <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>  
 
 <script>
-
 /* 로그인한 유저가 작성한 글인지 확인 */
 /* 일치시 수정삭제 보이기 */
 if("{{ request.session.member_id }}" == "{{ create.member_id }}" || "{{ request.session.member_id }}" == "admin1234"){
