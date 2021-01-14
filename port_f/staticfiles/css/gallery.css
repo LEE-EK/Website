@@ -1,0 +1,152 @@
+.container {
+    height: 1550px;
+}
+ol, ul {
+    list-style: none;
+}
+/* 갤러리 상단 */
+.sv_wrap {
+    position: relative;
+    height: 590px; 
+}
+/* 갤러리 상단 이미지 */
+.sv {
+    background-image: url("../../../static/images/gallery_3.jpg");
+    height: 450px;
+    width: 1600px;
+    background-size: auto 450px;
+    background-position: center;
+    position: relative;
+    left: -17%;
+    margin-top: -40px;
+}
+/* 갤러리 하단 */
+.content {
+    position: relative;
+    background: #fff;
+    padding: 50px 65px 110px;
+    margin-top: -100px;
+    left: 50%;
+    margin-left: -650px;
+}
+.inner {
+    width: 1300px;
+    height: 1000px;
+}
+/* 갤러리 타이틀 */
+.page_tit {
+    text-align: center;
+    font-size: 35px;
+    letter-spacing: 2px;
+    color: #333;
+    font-weight: bold;
+    line-height: 1.2em;
+    margin-bottom: 45px;
+    font-family: 'Oswald', 'Nanum Square', sans-serif;
+}
+/* 갤러리 리스트 */
+.artist-gallery {
+    overflow: hidden;
+    margin: 0 -34px 37px;
+    padding: 0px 0px 0px 20px;
+}
+.artist-gallery li {
+    float: left;
+    width: 290px;
+    margin-right: 13px;
+    margin-bottom: 13px;
+}
+.artist-gallery a {
+    display: block;
+    height: 290px;
+    overflow: hidden;
+    position: relative;
+}
+.artist-gallery span {
+    display: block;
+    position: absolute;
+    width: 600px;
+    height: 400px;
+    line-height: 400px;
+    left: 50%;
+    top: 50%;
+    margin-left: -300px;
+    margin-top: -200px;
+    text-align: center;
+}
+.artist-gallery span img {
+    display: inline-block;
+    min-width: 290px;
+    min-height: 290px;
+    max-width: 600px;
+    max-height: 600px;
+    vertical-align: middle;
+    margin: 0 auto;
+    transform: scale(1);
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    -o-transform: scale(1);
+    transition: all 0.3s ease-in-out;   /* 부드러운 모션을 위해 추가*/
+}
+.artist-gallery span img:hover {
+  transform: scale(1.2);
+  -webkit-transform: scale(1.2);
+  -moz-transform: scale(1.2);
+  -ms-transform: scale(1.2);
+  -o-transform: scale(1.2);
+}
+
+/* 레이어 팝업 */
+.layer_blind {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999999;
+    background: #000;
+    opacity: 0.6;
+    filter: alpha(opacity=60);
+    -ms-filter: alpha("opacity=60");
+}
+.layer_gallery .gall_pos {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    margin-top: 110px;
+    z-index: 9999999;
+}
+.layer_gallery .zoom_img {
+    width: 1200px;
+    margin: 0 auto 45px;
+    text-align: center;
+    line-height: 660px;
+    height: 660px;
+}
+.layer_gallery .zoom_img img {
+    max-width: 100%;
+    max-height: 100%;
+    vertical-align: middle;
+}
+/* 레이어 팝업창 닫기 */
+.align-c {
+    text-align: center !important;
+}
+.plain {
+    border: 0;
+    border-radius: 0;
+    outline: 0;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: transparent;
+}
+.img-mid, button img {
+    vertical-align: middle;
+    margin-top: -2px;
+}

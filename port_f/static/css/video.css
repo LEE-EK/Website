@@ -1,0 +1,110 @@
+.container {
+    height: 2000px;
+}
+ol, ul {
+    list-style: none;
+}
+/* 비디오 상단 */
+.sv_wrap {
+    position: relative;
+    height: 590px;
+}
+/* 비디오 상단 이미지 */
+.sv {
+    background-image: url("../../../static/images/gallery_3.jpg");
+    height: 450px;
+    width: 1600px;
+    background-size: auto 450px;
+    background-position: center;
+    position: relative;
+    left: -17%;
+    margin-top: -40px;
+}
+/* 비디오 하단 */
+.content {
+    position: relative;
+    background: #fff;
+    padding: 50px 65px 110px;
+    margin-top: -100px;
+    left: 50%;
+    margin-left: -650px;
+}
+.inner {
+    width: 1300px;
+    height: 1000px;
+}
+/* 비디오 타이틀 */
+.page_tit {
+    text-align: center;
+    font-size: 35px;
+    letter-spacing: 2px;
+    color: #333;
+    font-weight: bold;
+    line-height: 1.2em;
+    margin-bottom: 45px;
+    font-family: 'Oswald', 'Nanum Square', sans-serif;
+}
+/* 메인 비디오 영상 */
+.vod_view {
+    margin-bottom: 65px;
+    text-align: center;
+}
+.vod_view .frame iframe {
+    width: 100%;
+    height: 675px;
+}
+.vod_view .date {
+    text-align: center;
+    font-size: 15px;
+    color: #333;
+    font-weight: bold;
+    margin-top: 35px;
+    font-family: 'Oswald', 'Nanum Square', sans-serif;
+}
+.vod_view .tit {
+    text-align: center;
+    font-size: 25px;
+    color: #333;
+    font-weight: bold;
+    margin-top: 10px;
+    font-family: 'Oswald', 'Nanum Square', sans-serif;
+}
+/* 비디오 리스트 */
+.vod_list {
+    overflow: hidden;
+    margin: 0 -5px 45px;
+    padding: 0 5px 5px;
+    padding-left: 23px;
+}
+.vod_list li {
+    float: left;
+    width: 370px;
+    border: 1px solid #eee;
+    margin-right: 12px;
+    margin-top: 12px;
+    text-align: center;
+}
+.vod_list a {
+    display: block;
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+    transition: 0.2s;
+    -webkit-transition: 0.2s;
+    -moz-transition: 0.2s;
+    -o-transition: 0.2s;
+}
+a:visited {
+    color: #555;
+    text-decoration: none;
+}
+a:link {
+    color: #555;
+    text-decoration: none;
+}
+/* 비디오 썸네일 */
+.vod_list .thumb {
+    position: absolute;
+    left: 0;
+    top: 0;
+}

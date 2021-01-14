@@ -1,0 +1,141 @@
+{% extends "board/board_base.html" %}
+{% block title %} 스케쥴 | MARK {% endblock %}
+
+{% block boardbar %}
+{% load static %}
+<!-- conbody 내부 스타일시트 -->
+<style type="text/css">
+.conbody {
+    font-family: 'Nanum Square', '나눔 고딕', 'Nanum Gothic', sans-serif;
+    font-weight:  bold;
+    color: black;
+    margin: 0;
+    padding: 0;
+    margin-left:-50px;
+}
+h1{
+    text-align: center;
+    font-size: 35px;
+    letter-spacing: 7px;
+    background-color: #000000;
+    color: yellow;
+    font-weight: 700;
+    margin-bottom: 20px;
+    font-family: 'Oswald', 'Nanum Square', sans-serif;   
+}
+.fc-left{
+    margin-left:210px;
+}
+.fc-right{
+    margin-right:220px;
+}
+</style>
+     
+{% block conbody %}
+<div class="conbody">
+    <h1>SCHEDULE</h1>
+    <div id='calendar'></div>
+</div>
+
+
+
+<link rel='stylesheet' href='../../../static/css/fullcalendar.css' />
+<link rel='stylesheet' href='../../../static/css/daygrid.css' />
+<link rel='stylesheet' href='../../../static/css/timegrid.css' />    
+<script src='../../../static/js/fullcalendar.js'></script>
+<script src='../../../static/js/daygrid.js'></script>
+<script src='../../../static/js/timegrid.js'></script>
+<script src='../../../static/js/interaction.js'></script>
+<script>
+    var calendarEl = document.getElementById('calendar');
+    
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        plugins: [ 'interaction', 'dayGrid', 'timeGrid' ],
+        defaultView: 'dayGridMonth',
+        defaultDate: new Date(),
+        header: {
+            left: 'prev',
+            center: 'title',
+            right: 'next' 
+        },
+        titleFormat : function(date) { // title 설정
+            return date.date.year +"."+(date.date.month +1); 
+        },
+        events: [ // 스케쥴 등록
+            {
+                title: 'P8:00 SUPER ON:TACT',
+                start: '2020-11-04',
+                color: '#212121',
+                textColor: 'white'
+
+            },
+            {
+                start: '2020-11-04',
+                backgroundColor: '#333',
+                rendering : 'background'
+            },
+            {
+                title: 'P5:00 SBS 런닝맨',
+                start: '2020-11-15',
+                color: '#212121',
+                textColor: 'white'
+            },
+            {
+                start: '2020-11-15',
+                backgroundColor: '#333',
+                rendering : 'background'
+            },
+            {
+                title: 'P5:00 KBS 뮤직뱅크',
+                start: '2020-11-23',
+                color: '#212121',
+                textColor: 'white'
+            },
+            {
+                start: '2020-11-23',
+                backgroundColor: '#333',
+                rendering : 'background'
+            },
+            {
+            title: 'P6:00 Mnet MAMA',
+                start: '2020-12-06',
+                color: '#212121',
+                textColor: 'white'
+            },
+            {
+                start: '2020-12-06',
+                backgroundColor: '#333',
+                rendering : 'background'
+            },
+            {
+            title: 'P7:30 SBS 가요대전',
+                start: '2020-12-25',
+                color: '#212121',
+                textColor: 'white'
+            },
+            {
+                start: '2020-12-25',
+                backgroundColor: '#333',
+                rendering : 'background'
+            },
+            {
+                start: '2021-01-08',
+                backgroundColor: '#333',
+                rendering : 'background'
+            },
+            {
+                title: 'P5:00 KBS 뮤직뱅크',
+                start: '2021-01-08',
+                color: '#212121',
+                textColor: 'white'
+            },
+
+        ]  
+
+    });
+  
+    calendar.render();
+    
+</script> 
+{% endblock conbody %}
+{% endblock boardbar %}

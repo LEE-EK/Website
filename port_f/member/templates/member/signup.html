@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}회원가입 | MARK{% endblock %}
+
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/signup.css' %}">
+
+<div class="container_1">
+    <div class="signup-content">
+    <!-- Form Name -->
+    <legend class="text-center" style="border-bottom: 1px solid #6D6B6B;">회원가입<br><br></legend>
+        <form action = "{% url 'member:signup' %}" method = "post", class="signup-form">
+            <div class="form-group">
+                {% csrf_token %}
+                {{form | linebreaks}}
+                <br>
+                <input type="submit" name="submit" id="submit" class="form-submit" value="회원가입"/>
+            </div>
+        </form>
+    </div>
+</div>
+<br>
+<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+/* GET 방식으로만 받아올때 == 맨처음 FORM이 나타날때*/
+/* 주소창클릭시 팝업창이 나타나게한다 */
+var message = "{{ message }}";
+
+if (message=="GET"){
+    $("#id_address").click(function(){
+    new daum.Postcode({
+        oncomplete: function(data) {
+            var addr = data.address;
+            $('input[name=address]').attr('value',addr);  
+        }
+    }).open();
+});
+}
+/* 비밀번호와 비밀번호확인 일치 실패일 경우 */
+else if (message=="비밀번호일치"){
+    $('input[name=member_id]').attr('value',"{{ member_id }}"); 
+    $('input[name=member_pw]').attr('value',"{{ member_pw }}"); 
+    $('input[name=member_pw_r]').attr('value',"{{ member_pw_r }}"); 
+    $('input[name=nickname]').attr('value',"{{ nickname }}"); 
+    $('input[name=member_name]').attr('value',"{{ member_name }}"); 
+    $('input[name=address]').attr('value',"{{ address }}"); 
+    $('input[name=address_in]').attr('value',"{{ address_in }}"); 
+    $('input[name=phone_no]').attr('value',"{{ phone_no }}"); 
+    $('input[name=email]').attr('value',"{{ email }}"); 
+    alert("비밀번호가 일치하지 않습니다.");
+}
+/* 아이디가 중복일경우 */
+else if (message=="아이디중복"){
+    $('input[name=member_id]').attr('value',"{{ member_id }}"); 
+    $('input[name=member_pw]').attr('value',"{{ member_pw }}"); 
+    $('input[name=member_pw_r]').attr('value',"{{ member_pw_r }}"); 
+    $('input[name=nickname]').attr('value',"{{ nickname }}"); 
+    $('input[name=member_name]').attr('value',"{{ member_name }}"); 
+    $('input[name=address]').attr('value',"{{ address }}"); 
+    $('input[name=address_in]').attr('value',"{{ address_in }}"); 
+    $('input[name=phone_no]').attr('value',"{{ phone_no }}"); 
+    $('input[name=email]').attr('value',"{{ email }}"); 
+    alert("이미 존재하는 아이디입니다.");
+}
+/* 아이디 글자제한 */
+else if (message=="아이디글자제한"){
+    $('input[name=member_id]').attr('value',"{{ member_id }}"); 
+    $('input[name=member_pw]').attr('value',"{{ member_pw }}"); 
+    $('input[name=member_pw_r]').attr('value',"{{ member_pw_r }}"); 
+    $('input[name=nickname]').attr('value',"{{ nickname }}"); 
+    $('input[name=member_name]').attr('value',"{{ member_name }}"); 
+    $('input[name=address]').attr('value',"{{ address }}"); 
+    $('input[name=address_in]').attr('value',"{{ address_in }}"); 
+    $('input[name=phone_no]').attr('value',"{{ phone_no }}"); 
+    $('input[name=email]').attr('value',"{{ email }}"); 
+    alert("아이디는 영소문자/숫자만 입력해주세요.");
+}
+/* 비밀번호 글자제한 */
+else if (message=="비밀번호글자제한"){
+    $('input[name=member_id]').attr('value',"{{ member_id }}"); 
+    $('input[name=member_pw]').attr('value',"{{ member_pw }}"); 
+    $('input[name=member_pw_r]').attr('value',"{{ member_pw_r }}"); 
+    $('input[name=nickname]').attr('value',"{{ nickname }}"); 
+    $('input[name=member_name]').attr('value',"{{ member_name }}"); 
+    $('input[name=address]').attr('value',"{{ address }}"); 
+    $('input[name=address_in]').attr('value',"{{ address_in }}"); 
+    $('input[name=phone_no]').attr('value',"{{ phone_no }}"); 
+    $('input[name=email]').attr('value',"{{ email }}"); 
+    alert("비밀번호는 영대소문자/숫자만 입력해주세요.");
+}
+/* 닉네임이 중복일경우 */
+else if (message=="닉네임중복"){
+    $('input[name=member_id]').attr('value',"{{ member_id }}"); 
+    $('input[name=member_pw]').attr('value',"{{ member_pw }}"); 
+    $('input[name=member_pw_r]').attr('value',"{{ member_pw_r }}"); 
+    $('input[name=nickname]').attr('value',"{{ nickname }}"); 
+    $('input[name=member_name]').attr('value',"{{ member_name }}"); 
+    $('input[name=address]').attr('value',"{{ address }}"); 
+    $('input[name=address_in]').attr('value',"{{ address_in }}"); 
+    $('input[name=phone_no]').attr('value',"{{ phone_no }}"); 
+    $('input[name=email]').attr('value',"{{ email }}"); 
+    alert("이미 존재하는 닉네임입니다.");
+}
+/* 잘못된 입력값 */
+else if (message=="잘못된입력값"){
+    $('input[name=member_id]').attr('value',"{{ member_id }}"); 
+    $('input[name=member_pw]').attr('value',"{{ member_pw }}"); 
+    $('input[name=member_pw_r]').attr('value',"{{ member_pw_r }}"); 
+    $('input[name=nickname]').attr('value',"{{ nickname }}"); 
+    $('input[name=member_name]').attr('value',"{{ member_name }}"); 
+    $('input[name=address]').attr('value',"{{ address }}"); 
+    $('input[name=address_in]').attr('value',"{{ address_in }}"); 
+    $('input[name=phone_no]').attr('value',"{{ phone_no }}"); 
+    $('input[name=email]').attr('value',"{{ email }}"); 
+    alert("잘못된 입력값입니다.");
+}
+else{
+    alert("에러발생");
+}    
+</script>
+{% endblock content %}

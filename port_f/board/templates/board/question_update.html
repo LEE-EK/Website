@@ -1,0 +1,114 @@
+{% extends "board/question_list.html" %}
+
+{% block conbody %}
+{% load static %}
+<!-- updateView 내부 스타일시트 -->
+<style type="text/css">
+/* 라벨 */
+label {
+    padding: 0px 20px 0px 10px;
+}
+/* 제목 input */
+#id_subject {
+    width: 500px;
+    background-color: #F9F5F4;
+}
+/* 텍스트 input */
+#id_memo {
+    background-color: white;
+    display: block;
+    width: 600px;
+    height: 400px;
+    margin-top: 20px;
+    margin-left: 60px;
+
+}
+
+/* 목록버튼 */
+.btn_listWrap {
+    width: 100%;
+    margin: 0 auto;
+    padding-right: 120px;
+    overflow: hidden;
+    text-align: right;
+    font-size: 0;
+}
+.btn_list {
+    display: inline-block;
+    width: 80px;
+    height: 40px;
+    margin-top: 30px;
+    margin-right: 10px;
+    line-height: 40px;
+    font-size: 17px;
+    font-weight: bold;
+    border: 1px solid #666;
+    text-align: center;
+    background-color: #444;    
+}
+.btn_list a {
+    text-decoration: none;
+    color: white;
+    width: 120px;
+    display: inline-block;
+    padding-right: 42px;
+}
+.btn_list.btn_sub {
+    text-decoration: none;
+    color: white;
+    width: 80px;
+    height: 40px;
+    display: inline-block;
+    line-height: 38px;
+
+}
+
+    
+</style>
+<br><br><br>
+<div class="updateView">
+    <form method="POST" action="{% url 'board:question_update' pk=obj.pk %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form.as_table}}
+        <!-- 목록 버튼 -->
+        <div class="btn_listWrap">
+            <input type="submit" class="btn_list btn_sub" id="submit" value="수정완료"/>
+            <p class="btn_list">
+                <a href="javascript:delete_popup();">삭 제</a>
+            </p>
+            <p class="btn_list">
+                <a href="{% url 'board:question_list' %}">목 록</a>
+            </p>
+        </div>
+    </form>
+</div>
+
+<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+
+/* 삭제여부 팝업창*/
+function delete_popup(){
+    if("{{ request.session.member_id }}" == "{{ create.member_id }}" || "{{ request.session.member_id }}" == "admin1234"){
+        var result = confirm("정말 삭제하시겠습니까?");
+        if(result)
+        {
+            window.location.href = "{% url 'board:question_delete' pk=obj.pk %}";
+        }
+    }
+    else{
+        alert("경고");
+        window.location.href = "{% url 'board:question_list' %}";
+    }
+}
+var message = "{{ message }}";
+if (message=="한계초과"){
+    alert("게시글 내용을 초과하였습니다");
+    window.location.href = "{% url 'board:question_list' %}";
+}
+if (message=="출입금지"){
+    alert("작성자나 관리자가 아닙니다");
+    window.location.href = "{% url 'board:question_list' %}";
+}
+</script>
+{% endblock conbody %}

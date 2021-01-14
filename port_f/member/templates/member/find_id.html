@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+
+{% block title %}아이디 찾기 | MARK{% endblock %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+<!-- 아이디찾기-->
+<div class="wrapper fadeInDown">
+    <div id="formContent">
+    <br>
+    <h3>아이디 찾기</h3>
+    <br>
+    <!-- 아이디찾기 Form -->
+    <form method="POST" action="{% url 'member:find_id' %}">
+        {% csrf_token %}
+        {{form | linebreaks}}
+        <input type="submit" class="fadeIn fourth" value="확인">
+    </form>
+    </div>
+</div>
+<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+
+var message = "{{ message }}";
+if (message=="실패"){
+    alert("이름 또는 이메일주소가 올바르지 않습니다.");
+}        
+</script>
+{% endblock content %}

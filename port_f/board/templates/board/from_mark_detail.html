@@ -1,0 +1,185 @@
+{% extends "board/from_mark_list.html" %}
+
+{% block conbody %}
+{% load static %}
+<!-- conbody 내부 스타일시트 -->
+<style type="text/css">
+
+.container {
+    height: 4000px;
+}
+
+/* 테이블 상단*/
+table {
+    margin-top: 30px;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+.tbl_common_view {
+    width: 700px;
+    border: 1px solid #ddd;
+}
+.tbl_common_view th {
+    padding: 15px 0;
+    text-align: center;
+    background: #f5f5f5;
+    border-top: 2px solid #222;
+    border-bottom: 1px solid #ddd;
+    color: #222;
+    word-break: keep-all;
+    font-size: 16px;
+}
+.tbl_common_view td {
+    padding: 15px;
+    border-bottom: none;
+    border-top: none;
+    text-align: left;
+    line-height: 26px;
+    color: #444;
+    border-bottom: 1px solid #ddd;
+    word-break: keep-all;
+    font-size: 13px;
+    font-weight: bold;
+}
+.tbl_common_view td li span {
+    margin-right: 5px;
+}
+
+/* 내용 */
+.viewContWrap {
+    width: 700px;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    margin: 40px 0;
+    padding: 40px 0;
+    color: #444;
+}
+.viewCont {
+    width: 700px;
+    overflow: hidden;
+    font-size: 14px;
+    color: #444;
+}
+
+/* 목록버튼 */
+.btn_listWrap {
+    width: 100%;
+    margin: 0 auto;
+    padding-right: 120px;
+    overflow: hidden;
+    text-align: right;
+    font-size: 0;
+}
+.btn_list {
+    display: inline-block;
+    width: 80px;
+    height: 40px;
+    margin-top: 30px;
+    margin-right: 10px;
+    line-height: 40px;
+    font-size: 17px;
+    font-weight: bold;
+    border: 1px solid #666;
+    text-align: center;
+    background-color: #444;    
+}
+.btn_list a {
+    text-decoration: none;
+    color: white;
+    width: 120px;
+    display: inline-block;
+    padding-right: 42px;
+}
+
+/* 수정, 삭제 버튼 숨기기*/
+#control{display:none}
+
+</style>
+
+<!-- 테이블 상단 -->
+<table cellpadding="0" cellspacing="0" border="0" class="tbl_common_view">
+    <tbody>
+        <tr>
+            <th colspan="2">{{ obj.subject }}</th>
+        </tr>
+        <tr>
+            <td>
+                <ul>
+                    <li>
+                        <span>작성자 :</span>
+                        {{ obj.name }}
+                    </li>
+                    <li>
+                        <span>작성일 :</span>
+                        {{ obj.create_date }}
+                    </li>
+                    <li>
+                        <span>조회수 :</span>
+                        {{ obj.hits }}
+                    </li>
+                </ul>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- 내용 -->
+<div class="viewContWrap">
+    <div class="viewCont">
+        {{ obj.memo|safe }}
+    </div>
+</div>
+
+<!-- 목록 버튼 -->
+<div class="btn_listWrap">
+    <span id="control">
+        <p class="btn_list">
+            <a href="{% url 'board:from_mark_update' pk=obj.pk %}">수 정</a>
+        </p>
+        <p class="btn_list">
+            <a href="javascript:delete_popup();">삭 제</a>
+        </p>
+    </span>
+    <p class="btn_list">
+        <a href="{% url 'board:from_mark_list' %}">목 록</a>
+    </p>
+</div>
+<br><br>
+
+<script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>  
+
+<script>
+
+/* 로그인한 유저가 작성한 글인지 확인 */
+/* 일치시 수정삭제 보이기 */
+if("{{ request.session.member_id }}" == "{{ create.member_id }}" || "{{ request.session.member_id }}" == "admin1234" ){
+    $("#control").show();
+}
+else {
+    $("#contorl").hide();    
+}
+
+
+/* 게시글 삭제여부 팝업창 */
+function delete_popup(){
+    if("{{ request.session.member_id }}" == "{{ create.member_id }}" || "{{ request.session.member_id }}" == "admin1234" ){
+        var result = confirm("정말 삭제하시겠습니까?");
+        if(result)
+        {
+            window.location.href = "{% url 'board:from_mark_delete' pk=obj.pk %}";
+        }
+    }
+    else{
+        alert("경고");
+        window.location.href = "{% url 'board:from_mark_list' %}";
+    }
+}
+
+
+
+</script>
+
+{% endblock conbody %}
+
+
