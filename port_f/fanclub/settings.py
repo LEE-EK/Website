@@ -135,7 +135,10 @@ DATETIME_FORMAT = 'Y-m-d H:i:s'
 
 STATIC_URL = '/static/' #URL
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/') #웹서버 경로
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')] #실제 디렉터리 경로/개발서버 경로
+#STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')] 실제 디렉터리 경로/개발서버 경로
+
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
