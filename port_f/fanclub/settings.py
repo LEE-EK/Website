@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-import django_heroku
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,9 +26,9 @@ SECRET_KEY = 'd$%d_^iz0%a_q9$-jdh^-v4i_y-4e+#ujy#u!v#fj2as&wjz!_'
 #    SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.herokuapp.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -56,7 +55,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 INTERNAL_IPS = ['127.0.0.1']
@@ -135,10 +133,7 @@ DATETIME_FORMAT = 'Y-m-d H:i:s'
 
 STATIC_URL = '/static/' #URL
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/') #웹서버 경로
-#STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')] 실제 디렉터리 경로/개발서버 경로
-
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
-
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')] #실제 디렉터리 경로/개발서버 경로
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
@@ -156,8 +151,5 @@ SESSION_SAVE_EVERY_REQUEST = True
 SUMMERNOTE_CONFIG = {
     'attachment_filesize_limit': 500*500
 }
-
-#Activate Django-Heroku.
-django_heroku.settings(locals())
 
 
