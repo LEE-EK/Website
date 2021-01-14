@@ -1,0 +1,1 @@
+web:gunicorn nctmarklee.wsgi --log-file -

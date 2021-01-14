@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import django_heroku
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,9 +27,9 @@ SECRET_KEY = 'd$%d_^iz0%a_q9$-jdh^-v4i_y-4e+#ujy#u!v#fj2as&wjz!_'
 #    SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.herokuapp.com']
 
 
 # Application definition
@@ -55,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 INTERNAL_IPS = ['127.0.0.1']
@@ -151,5 +153,8 @@ SESSION_SAVE_EVERY_REQUEST = True
 SUMMERNOTE_CONFIG = {
     'attachment_filesize_limit': 500*500
 }
+
+#Activate Django-Heroku.
+django_heroku.settings(locals())
 
 
